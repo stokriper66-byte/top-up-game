@@ -19,6 +19,7 @@ body{
   padding:20px;
   border-radius:18px;
   text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
 }
 .logo{
   width:180px;
@@ -77,8 +78,8 @@ input,select{
 
 <div class="box">
 
-<!-- LOGO (BASE64) -->
-<img class="logo" src="DATA_LOGO_DISINI">
+<!-- LOGO MEMETSTR -->
+<img class="logo" src="data:image/jpeg;base64,{{LOGO_BASE64}}">
 
 <h2>TOP UP GAME</h2>
 <div class="subtitle">Murah • Aman • Proses Manual</div>
@@ -102,7 +103,7 @@ input,select{
 <div class="paybox">
 <b>QRIS</b><br>
 Scan QR di bawah ini
-<img class="qris" src="DATA_QRIS_DISINI">
+<img class="qris" src="data:image/jpeg;base64,{{QRIS_BASE64}}">
 </div>
 
 <div class="paybox">
