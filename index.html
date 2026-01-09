@@ -5,144 +5,101 @@
 <title>MEMETSTR - Top Up Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#020617;
-  color:white;
-  padding:20px;
+body{background:#020617;color:white;font-family:Arial;padding:20px}
+.box{max-width:420px;margin:auto}
+h2{text-align:center}
+.subtitle{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:15px}
+input,select,button{
+ width:100%;padding:14px;margin-top:10px;
+ border:none;border-radius:10px;background:#111827;color:white
 }
-.box{
-  max-width:420px;
-  margin:auto;
-  background:#020617;
-  padding:20px;
-  border-radius:18px;
-}
-h2{
-  text-align:center;
-  margin-bottom:5px;
-}
-.subtitle{
-  text-align:center;
-  color:#94a3b8;
-  font-size:14px;
-  margin-bottom:15px;
-}
-input,select{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border-radius:10px;
-  border:none;
-  background:#111827;
-  color:white;
-}
-.price{
-  margin-top:10px;
-  font-size:15px;
-  color:#22c55e;
-  font-weight:bold;
-}
+.price{color:#22c55e;font-weight:bold;margin-top:10px}
+button{background:#22c55e;font-weight:bold}
 .paybox{
-  background:#111827;
-  padding:12px;
-  border-radius:12px;
-  margin-top:15px;
-  font-size:14px;
-}
-.upload{
-  margin-top:10px;
-}
-button{
-  width:100%;
-  padding:14px;
-  background:#22c55e;
-  border:none;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:bold;
-  margin-top:18px;
-}
-.note{
-  font-size:13px;
-  color:#94a3b8;
-  margin-top:10px;
-  text-align:center;
+ background:#111827;padding:12px;border-radius:12px;margin-top:15px;font-size:14px
 }
 </style>
 </head>
 <body>
 
 <div class="box">
-
 <h2>TOP UP GAME</h2>
-<div class="subtitle">Murah • Aman • Proses Manual</div>
+<div class="subtitle">Multi Game • Proses Manual</div>
 
-<input type="text" id="idgame" placeholder="Masukkan ID Game">
-
-<select id="game">
-  <option value="Mobile Legends">Mobile Legends</option>
-  <option value="Free Fire">Free Fire</option>
-  <option value="PUBG">PUBG</option>
+<select id="game" onchange="updateList()">
+  <option value="">Pilih Game</option>
+  <option value="ml">Mobile Legends</option>
+  <option value="ff">Free Fire</option>
 </select>
 
+<input id="idgame" placeholder="Masukkan ID / Server">
+
 <select id="nominal" onchange="hitung()">
-  <option value="">Pilih Nominal</option>
-  <option value="8600">86 Diamond - Rp8.600</option>
-  <option value="17200">172 Diamond - Rp17.200</option>
-  <option value="25700">257 Diamond - Rp25.700</option>
+  <option value="">Pilih Paket</option>
 </select>
 
 <div class="price" id="total">Total: Rp0</div>
 
 <div class="paybox">
-<b>Pembayaran</b><br>
-💬 Via WhatsApp Admin<br><br>
+<b>Pembayaran via WhatsApp</b><br><br>
 Pulsa: <b>082326040514</b><br>
 DANA / OVO / GoPay: <b>082258810964</b>
 </div>
 
-<div class="upload">
-<label>Upload Bukti Transfer (opsional)</label>
-<input type="file" disabled>
-</div>
-
-<div class="note">
-Setelah bayar, klik ORDER lalu kirim bukti via WhatsApp
-</div>
-
 <button onclick="order()">ORDER VIA WHATSAPP</button>
-
 </div>
 
 <script>
+const data = {
+ ml: [
+  {nama:"86 DM", harga:11000},
+  {nama:"172 DM", harga:20000},
+  {nama:"257 DM", harga:29000},
+  {nama:"514 DM", harga:56000},
+  {nama:"706 DM", harga:83000}
+ ],
+ ff: [
+  {nama:"70 DM", harga:12000},
+  {nama:"140 DM", harga:23000},
+  {nama:"210 DM", harga:34000},
+  {nama:"355 DM", harga:45000}
+ ]
+};
+
+function updateList(){
+ let g = game.value;
+ nominal.innerHTML = '<option value="">Pilih Paket</option>';
+ if(!data[g]) return;
+
+ data[g].forEach(d=>{
+  let opt = document.createElement("option");
+  opt.value = d.harga;
+  opt.text = d.nama+" — Rp"+d.harga.toLocaleString("id-ID");
+  nominal.appendChild(opt);
+ });
+ total.innerText="Total: Rp0";
+}
+
 function hitung(){
-  let harga=document.getElementById("nominal").value;
-  document.getElementById("total").innerText=
-    "Total: Rp"+harga;
+ total.innerText = nominal.value
+ ? "Total: Rp"+nominal.value
+ : "Total: Rp0";
 }
 
 function order(){
-  let id=document.getElementById("idgame").value;
-  let game=document.getElementById("game").value;
-  let nominal=document.getElementById("nominal").options[
-    document.getElementById("nominal").selectedIndex
-  ].text;
-  let harga=document.getElementById("nominal").value;
+ let g = game.options[game.selectedIndex].text;
+ let p = nominal.options[nominal.selectedIndex].text;
 
-  let pesan=`Halo admin MEMETSTR,
+ let msg=`Halo admin MEMETSTR,
 Saya mau top up.
 
-Game: ${game}
-ID: ${id}
-Nominal: ${nominal}
-Total: Rp${harga}
+Game: ${g}
+ID: ${idgame.value}
+Paket: ${p}
 
 Saya akan bayar dan kirim bukti.`;
 
-  window.location.href=
-  "https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
+ location.href="https://wa.me/6282258810964?text="+encodeURIComponent(msg);
 }
 </script>
 
