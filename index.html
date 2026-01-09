@@ -8,7 +8,7 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:linear-gradient(180deg,#020617,#0f172a);
+  background:#020617;
   color:white;
   padding:20px;
 }
@@ -18,15 +18,13 @@ body{
   background:#020617;
   padding:20px;
   border-radius:18px;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.5);
 }
-.logo{
-  width:180px;
-  margin:10px auto;
-  display:block;
+h2{
+  text-align:center;
+  margin-bottom:5px;
 }
 .subtitle{
+  text-align:center;
   color:#94a3b8;
   font-size:14px;
   margin-bottom:15px;
@@ -40,24 +38,23 @@ input,select{
   background:#111827;
   color:white;
 }
+.price{
+  margin-top:10px;
+  font-size:15px;
+  color:#22c55e;
+  font-weight:bold;
+}
 .paybox{
   background:#111827;
   padding:12px;
   border-radius:12px;
   margin-top:15px;
-  text-align:left;
   font-size:14px;
 }
-.qris{
-  width:100%;
-  max-width:260px;
-  display:block;
-  margin:10px auto;
-  background:white;
-  padding:6px;
-  border-radius:12px;
+.upload{
+  margin-top:10px;
 }
-.btn{
+button{
   width:100%;
   padding:14px;
   background:#22c55e;
@@ -71,6 +68,7 @@ input,select{
   font-size:13px;
   color:#94a3b8;
   margin-top:10px;
+  text-align:center;
 }
 </style>
 </head>
@@ -78,70 +76,73 @@ input,select{
 
 <div class="box">
 
-<!-- LOGO MEMETSTR -->
-<img class="logo" src="data:image/jpeg;base64,{{LOGO_BASE64}}">
-
 <h2>TOP UP GAME</h2>
 <div class="subtitle">Murah • Aman • Proses Manual</div>
 
 <input type="text" id="idgame" placeholder="Masukkan ID Game">
 
 <select id="game">
-  <option>Mobile Legends</option>
-  <option>Free Fire</option>
-  <option>PUBG</option>
-  <option>Honor of Kings</option>
+  <option value="Mobile Legends">Mobile Legends</option>
+  <option value="Free Fire">Free Fire</option>
+  <option value="PUBG">PUBG</option>
 </select>
 
-<select id="nominal">
-  <option>86 Diamond</option>
-  <option>172 Diamond</option>
-  <option>257 Diamond</option>
-  <option>Weekly Pass</option>
+<select id="nominal" onchange="hitung()">
+  <option value="">Pilih Nominal</option>
+  <option value="8600">86 Diamond - Rp8.600</option>
+  <option value="17200">172 Diamond - Rp17.200</option>
+  <option value="25700">257 Diamond - Rp25.700</option>
 </select>
 
-<div class="paybox">
-<b>QRIS</b><br>
-Scan QR di bawah ini
-<img class="qris" src="data:image/jpeg;base64,{{QRIS_BASE64}}">
-</div>
+<div class="price" id="total">Total: Rp0</div>
 
 <div class="paybox">
-<b>Pulsa</b><br>
-📱 082326040514
+<b>Pembayaran</b><br>
+💬 Via WhatsApp Admin<br><br>
+Pulsa: <b>082326040514</b><br>
+DANA / OVO / GoPay: <b>082258810964</b>
 </div>
 
-<div class="paybox">
-<b>DANA / OVO / GoPay</b><br>
-📱 082258810964
+<div class="upload">
+<label>Upload Bukti Transfer (opsional)</label>
+<input type="file" disabled>
 </div>
 
 <div class="note">
-Setelah bayar, klik ORDER dan kirim bukti transfer.
+Setelah bayar, klik ORDER lalu kirim bukti via WhatsApp
 </div>
 
-<button class="btn" onclick="order()">ORDER VIA WHATSAPP</button>
+<button onclick="order()">ORDER VIA WHATSAPP</button>
 
 </div>
 
 <script>
-function order(){
-let id=document.getElementById("idgame").value;
-let game=document.getElementById("game").value;
-let nominal=document.getElementById("nominal").value;
+function hitung(){
+  let harga=document.getElementById("nominal").value;
+  document.getElementById("total").innerText=
+    "Total: Rp"+harga;
+}
 
-let pesan=`Halo admin MEMETSTR,
+function order(){
+  let id=document.getElementById("idgame").value;
+  let game=document.getElementById("game").value;
+  let nominal=document.getElementById("nominal").options[
+    document.getElementById("nominal").selectedIndex
+  ].text;
+  let harga=document.getElementById("nominal").value;
+
+  let pesan=`Halo admin MEMETSTR,
 Saya mau top up.
 
 Game: ${game}
 ID: ${id}
 Nominal: ${nominal}
+Total: Rp${harga}
 
-Pembayaran sudah dilakukan.
-Bukti transfer terlampir.`;
+Saya akan bayar dan kirim bukti.`;
 
-window.location.href=
-"https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
+  window.location.href=
+  "https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
 }
 </script>
 
