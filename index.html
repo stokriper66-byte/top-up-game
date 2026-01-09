@@ -1,176 +1,95 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEMETSTR Top Up Game</title>
-
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(180deg,#0f2027,#203a43);
-  color:#fff;
-}
-.container{
-  max-width:420px;
-  margin:30px auto;
-  background:#1b1f24;
-  padding:20px;
-  border-radius:18px;
-  box-shadow:0 15px 35px rgba(0,0,0,.6);
-  animation:fade .7s ease;
-}
-@keyframes fade{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
-}
-.logo{text-align:center;margin-bottom:10px}
-.logo img{width:170px}
-h2{text-align:center;margin:10px 0 20px}
-label{font-size:14px;margin-top:12px;display:block}
-input,select,button{
-  width:100%;
-  padding:12px;
-  margin-top:6px;
-  border-radius:10px;
-  border:none;
-  font-size:15px;
-}
-input,select{
-  background:#2a2f36;
-  color:#fff;
-}
-.total{
-  margin-top:14px;
-  font-size:16px;
-  font-weight:bold;
-}
-button{
-  margin-top:18px;
-  background:linear-gradient(135deg,#25d366,#1ebe5d);
-  color:#000;
-  font-weight:bold;
-}
-.qris{
-  margin-top:22px;
-  padding:15px;
-  background:#111;
-  border-radius:14px;
-  text-align:center;
-}
-.qris img{
-  width:200px;
-  border-radius:12px;
-}
-.footer{
-  text-align:center;
-  font-size:12px;
-  margin-top:15px;
-  opacity:.7;
-}
-</style>
-</head>
-
-<body>
-<div class="container">
-
-<div class="logo">
-  <img src="logo.png" alt="MEMETSTR">
-</div>
-
-<h2>TOP UP GAME</h2>
-
-<label>Pilih Game</label>
-<select id="game" onchange="isiNominal()">
-  <option value="">-- Pilih Game --</option>
-  <option value="Free Fire">Free Fire</option>
-  <option value="Mobile Legends">Mobile Legends</option>
-  <option value="PUBG Mobile">PUBG Mobile</option>
-  <option value="Genshin Impact">Genshin Impact</option>
-</select>
-
-<label>ID Game</label>
-<input type="text" id="idgame" placeholder="Masukkan ID Game">
-
-<label>Nominal</label>
-<select id="nominal" onchange="hitung()">
-  <option value="">-- Pilih Nominal --</option>
-</select>
-
-<div class="total" id="total">Total : -</div>
-
-<button onclick="order()">Order via WhatsApp</button>
-
-<div class="qris">
-  <p><b>Bayar via QRIS</b></p>
-  <img src="qris.jpg" alt="QRIS">
-  <p style="font-size:12px;opacity:.8">Scan QRIS lalu klik Order</p>
-</div>
-
-<div class="footer">© MEMETSTR Top Up</div>
-
-</div>
-
 <script>
-const harga={
- "Free Fire":{
-   "70 Diamond":10000,
-   "140 Diamond":19000,
-   "355 Diamond":45000
- },
- "Mobile Legends":{
-   "86 Diamond":23000,
-   "172 Diamond":45000,
-   "429 Diamond":100000
- },
- "PUBG Mobile":{
-   "60 UC":15000,
-   "325 UC":75000
- },
- "Genshin Impact":{
-   "60 Genesis":16000,
-   "300+30":79000
- }
+const harga = {
+  "Free Fire": {
+    "70 Diamond": 10000,
+    "140 Diamond": 19000,
+    "210 Diamond": 28000,
+    "355 Diamond": 45000,
+    "720 Diamond": 90000
+  },
+  "Mobile Legends": {
+    "86 Diamond": 23000,
+    "172 Diamond": 45000,
+    "257 Diamond": 67000,
+    "344 Diamond": 89000,
+    "429 Diamond": 110000
+  },
+  "PUBG Mobile": {
+    "60 UC": 15000,
+    "180 UC": 43000,
+    "325 UC": 75000,
+    "660 UC": 145000
+  },
+  "Genshin Impact": {
+    "60 Genesis": 16000,
+    "300+30": 79000,
+    "980+110": 245000
+  },
+  "Call of Duty Mobile": {
+    "63 CP": 15000,
+    "128 CP": 29000,
+    "321 CP": 69000,
+    "645 CP": 135000
+  },
+  "Higgs Domino": {
+    "1B Chip": 10000,
+    "2B Chip": 19000,
+    "5B Chip": 45000,
+    "10B Chip": 85000
+  },
+  "Roblox": {
+    "80 Robux": 15000,
+    "160 Robux": 29000,
+    "400 Robux": 69000,
+    "800 Robux": 135000
+  }
+};
+
+const nomorBayar = {
+  "Pulsa": "6282623040514",
+  "DANA": "6282258810964",
+  "GoPay": "6282258810964",
+  "OVO": "6282258810964"
 };
 
 function isiNominal(){
- const g=game.value;
- nominal.innerHTML='<option value="">-- Pilih Nominal --</option>';
- total.innerText="Total : -";
- if(!g) return;
- for(let n in harga[g]){
-  let o=document.createElement("option");
-  o.value=n;
-  o.text=n+" - Rp "+harga[g][n];
-  nominal.appendChild(o);
- }
+  const g = game.value;
+  nominal.innerHTML = '<option value="">-- Pilih Nominal --</option>';
+  total.innerText = "Total : -";
+  if(!g) return;
+
+  for(let n in harga[g]){
+    let opt = document.createElement("option");
+    opt.value = n;
+    opt.text = n + " - Rp " + harga[g][n];
+    nominal.appendChild(opt);
+  }
 }
 
 function hitung(){
- if(!nominal.value) return;
- total.innerText="Total : Rp "+harga[game.value][nominal.value];
+  if(!nominal.value) return;
+  total.innerText = "Total : Rp " + harga[game.value][nominal.value];
 }
 
 function order(){
- if(!game.value||!idgame.value||!nominal.value){
-  alert("Lengkapi data!");
-  return;
- }
- const msg=`Halo Admin MEMETSTR
+  if(!game.value || !idgame.value || !nominal.value || !pay.value){
+    alert("Lengkapi data terlebih dahulu!");
+    return;
+  }
+
+  const tujuan = nomorBayar[pay.value];
+  const pesan = `Halo Admin MEMETSTR
 Saya mau top up
 
 Game: ${game.value}
 ID: ${idgame.value}
 Nominal: ${nominal.value}
 Harga: Rp ${harga[game.value][nominal.value]}
+Pembayaran: ${pay.value}
 
-Saya sudah bayar via QRIS`;
- location.href=
- "https://wa.me/6282258810964?text="+encodeURIComponent(msg);
+Terima kasih 🙏`;
+
+  location.href =
+    "https://wa.me/" + tujuan + "?text=" + encodeURIComponent(pesan);
 }
 </script>
-
-</body>
-</html>
