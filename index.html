@@ -1,95 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>MEMETSTR - Top Up Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: white;
+      padding: 20px;
+    }
+    .box {
+      max-width: 420px;
+      margin: auto;
+      background: #111827;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    img.logo {
+      width: 160px;
+      margin-bottom: 10px;
+    }
+    img.qris {
+      width: 220px;
+      margin: 15px 0;
+      border-radius: 10px;
+      background: white;
+      padding: 5px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    button {
+      background: #22c55e;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .pay {
+      background: #1f2933;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      text-align: left;
+    }
+    .note {
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+
+  <!-- LOGO -->
+  <img src="logo.png" class="logo" alt="MEMETSTR">
+
+  <h2>TOP UP GAME</h2>
+  <p class="note">Murah • Aman • Proses Manual</p>
+
+  <!-- FORM ORDER -->
+  <input type="text" id="idgame" placeholder="Masukkan ID Game">
+
+  <select id="game">
+    <option>Mobile Legends</option>
+    <option>Free Fire</option>
+    <option>PUBG</option>
+    <option>Honor of Kings</option>
+  </select>
+
+  <select id="nominal">
+    <option>86 Diamond</option>
+    <option>172 Diamond</option>
+    <option>257 Diamond</option>
+    <option>Weekly Diamond Pass</option>
+  </select>
+
+  <!-- PEMBAYARAN -->
+  <h3>Metode Pembayaran</h3>
+
+  <div class="pay">
+    <b>QRIS</b><br>
+    Scan QR di bawah ini
+    <img src="qris.png" class="qris" alt="QRIS">
+  </div>
+
+  <div class="pay">
+    <b>Pulsa</b><br>
+    📱 082326040514
+  </div>
+
+  <div class="pay">
+    <b>DANA / OVO / GoPay</b><br>
+    📱 082258810964
+  </div>
+
+  <p class="note">
+    Setelah pembayaran, klik ORDER dan kirim bukti transfer.
+  </p>
+
+  <button onclick="order()">ORDER VIA WHATSAPP</button>
+
+</div>
+
 <script>
-const harga = {
-  "Free Fire": {
-    "70 Diamond": 10000,
-    "140 Diamond": 19000,
-    "210 Diamond": 28000,
-    "355 Diamond": 45000,
-    "720 Diamond": 90000
-  },
-  "Mobile Legends": {
-    "86 Diamond": 23000,
-    "172 Diamond": 45000,
-    "257 Diamond": 67000,
-    "344 Diamond": 89000,
-    "429 Diamond": 110000
-  },
-  "PUBG Mobile": {
-    "60 UC": 15000,
-    "180 UC": 43000,
-    "325 UC": 75000,
-    "660 UC": 145000
-  },
-  "Genshin Impact": {
-    "60 Genesis": 16000,
-    "300+30": 79000,
-    "980+110": 245000
-  },
-  "Call of Duty Mobile": {
-    "63 CP": 15000,
-    "128 CP": 29000,
-    "321 CP": 69000,
-    "645 CP": 135000
-  },
-  "Higgs Domino": {
-    "1B Chip": 10000,
-    "2B Chip": 19000,
-    "5B Chip": 45000,
-    "10B Chip": 85000
-  },
-  "Roblox": {
-    "80 Robux": 15000,
-    "160 Robux": 29000,
-    "400 Robux": 69000,
-    "800 Robux": 135000
-  }
-};
+function order() {
+  let id = document.getElementById("idgame").value;
+  let game = document.getElementById("game").value;
+  let nominal = document.getElementById("nominal").value;
 
-const nomorBayar = {
-  "Pulsa": "6282623040514",
-  "DANA": "6282258810964",
-  "GoPay": "6282258810964",
-  "OVO": "6282258810964"
-};
+  let pesan = `Halo admin MEMETSTR, saya mau top up.
 
-function isiNominal(){
-  const g = game.value;
-  nominal.innerHTML = '<option value="">-- Pilih Nominal --</option>';
-  total.innerText = "Total : -";
-  if(!g) return;
+Game: ${game}
+ID: ${id}
+Nominal: ${nominal}
 
-  for(let n in harga[g]){
-    let opt = document.createElement("option");
-    opt.value = n;
-    opt.text = n + " - Rp " + harga[g][n];
-    nominal.appendChild(opt);
-  }
-}
+Pembayaran: (QRIS / Pulsa / E-Wallet)
+Bukti transfer terlampir.`;
 
-function hitung(){
-  if(!nominal.value) return;
-  total.innerText = "Total : Rp " + harga[game.value][nominal.value];
-}
+  let wa = "6282258810964";
 
-function order(){
-  if(!game.value || !idgame.value || !nominal.value || !pay.value){
-    alert("Lengkapi data terlebih dahulu!");
-    return;
-  }
-
-  const tujuan = nomorBayar[pay.value];
-  const pesan = `Halo Admin MEMETSTR
-Saya mau top up
-
-Game: ${game.value}
-ID: ${idgame.value}
-Nominal: ${nominal.value}
-Harga: Rp ${harga[game.value][nominal.value]}
-Pembayaran: ${pay.value}
-
-Terima kasih 🙏`;
-
-  location.href =
-    "https://wa.me/" + tujuan + "?text=" + encodeURIComponent(pesan);
+  window.location.href =
+    `https://wa.me/${wa}?text=${encodeURIComponent(pesan)}`;
 }
 </script>
+
+</body>
+</html>
