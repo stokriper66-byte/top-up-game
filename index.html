@@ -5,93 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Top Up Game</title>
   <style>
-    body {
-      font-family: serif;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 36px;
-    }
+    body { font-family: Arial; padding: 20px; }
     select, input, button {
-      margin: 10px 0;
-      padding: 8px;
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
       font-size: 16px;
     }
     button {
-      cursor: pointer;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
-  <h1>TOP UP GAME</h1>
+<h2>TOP UP GAME</h2>
 
-  <label>Game</label><br>
-  <select id="game" onchange="updateNominal()">
-    <option value="">Pilih Game</option>
-    <option value="Free Fire">Free Fire</option>
-  </select>
+<label>Game</label>
+<select id="game">
+  <option value="">Pilih Game</option>
+  <option value="Free Fire">Free Fire</option>
+</select>
 
-  <br>
+<label>ID Game</label>
+<input type="text" id="idgame" placeholder="Masukkan ID Game">
 
-  <label>ID Game</label><br>
-  <input type="text" id="idgame" placeholder="Masukkan ID Game">
+<label>Nominal</label>
+<select id="nominal">
+  <option value="">Pilih Nominal</option>
+</select>
 
-  <br>
+<p>Total: <b id="total">-</b></p>
 
-  <label>Nominal</label><br>
-  <select id="nominal" onchange="updateTotal()">
-    <option value="">Pilih Nominal</option>
-  </select>
+<button id="btnWA">Order WhatsApp</button>
 
-  <p>Total: <strong id="total">-</strong></p>
+<script>
+  const game = document.getElementById("game");
+  const nominal = document.getElementById("nominal");
+  const total = document.getElementById("total");
+  const btnWA = document.getElementById("btnWA");
 
-  <button onclick="orderWA()">Order WhatsApp</button>
+  game.addEventListener("change", () => {
+    nominal.innerHTML = '<option value="">Pilih Nominal</option>';
+    total.innerText = "-";
 
-  <script>
-    function updateNominal() {
-      const game = document.getElementById("game").value;
-      const nominal = document.getElementById("nominal");
-      const total = document.getElementById("total");
+    if (game.value === "Free Fire") {
+      nominal.innerHTML += `
+        <option value="10000">100 Diamond - Rp10.000</option>
+        <option value="20000">210 Diamond - Rp20.000</option>
+      `;
+    }
+  });
 
-      nominal.innerHTML = '<option value="">Pilih Nominal</option>';
-      total.innerText = "-";
+  nominal.addEventListener("change", () => {
+    total.innerText = "Rp" + Number(nominal.value).toLocaleString("id-ID");
+  });
 
-      if (game === "Free Fire") {
-        nominal.innerHTML += `
-          <option value="10000">100 Diamond - Rp10.000</option>
-          <option value="20000">210 Diamond - Rp20.000</option>
-          <option value="50000">530 Diamond - Rp50.000</option>
-        `;
-      }
+  btnWA.addEventListener("click", () => {
+    if (!game.value || !nominal.value || !idgame.value) {
+      alert("Lengkapi data dulu");
+      return;
     }
 
-    function updateTotal() {
-      const nominal = document.getElementById("nominal").value;
-      const total = document.getElementById("total");
+    const pesan = `Top Up Game
+Game: ${game.value}
+ID Game: ${idgame.value}
+Nominal: Rp${Number(nominal.value).toLocaleString("id-ID")}`;
 
-      total.innerText = nominal ? "Rp" + Number(nominal).toLocaleString("id-ID") : "-";
-    }
-
-    function orderWA() {
-      const game = document.getElementById("game").value;
-      const id = document.getElementById("idgame").value;
-      const nominal = document.getElementById("nominal").value;
-
-      if (!game  !id  !nominal) {
-        alert("Lengkapi data dulu");
-        return;
-      }
-
-      const pesan = `Top Up Game
-Game: ${game}
-ID Game: ${id}
-Nominal: Rp${Number(nominal).toLocaleString("id-ID")}`;
-
-      const wa = "https://wa.me/6282258810964?text=" + encodeURIComponent(pesan);
-      window.open(wa, "_blank");
-    }
-  </script>
+    window.open(
+      "https://wa.me/6282258810964?text=" + encodeURIComponent(pesan),
+      "_blank"
+    );
+  });
+</script>
 
 </body>
 </html>
