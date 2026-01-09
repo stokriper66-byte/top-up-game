@@ -1,107 +1,81 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>MEMETSTR - Top Up Game</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{background:#020617;color:white;font-family:Arial;padding:20px}
-.box{max-width:420px;margin:auto}
-h2{text-align:center}
-.subtitle{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:15px}
-input,select,button{
- width:100%;padding:14px;margin-top:10px;
- border:none;border-radius:10px;background:#111827;color:white
-}
-.price{color:#22c55e;font-weight:bold;margin-top:10px}
-button{background:#22c55e;font-weight:bold}
-.paybox{
- background:#111827;padding:12px;border-radius:12px;margin-top:15px;font-size:14px
-}
-</style>
-</head>
-<body>
-
-<div class="box">
-<h2>TOP UP GAME</h2>
-<div class="subtitle">Multi Game • Proses Manual</div>
-
-<select id="game" onchange="updateList()">
-  <option value="">Pilih Game</option>
-  <option value="ml">Mobile Legends</option>
-  <option value="ff">Free Fire</option>
-</select>
-
-<input id="idgame" placeholder="Masukkan ID / Server">
-
-<select id="nominal" onchange="hitung()">
-  <option value="">Pilih Paket</option>
-</select>
-
-<div class="price" id="total">Total: Rp0</div>
-
-<div class="paybox">
-<b>Pembayaran via WhatsApp</b><br><br>
-Pulsa: <b>082326040514</b><br>
-DANA / OVO / GoPay: <b>082258810964</b>
-</div>
-
-<button onclick="order()">ORDER VIA WHATSAPP</button>
-</div>
-
 <script>
-const data = {
- ml: [
-  {nama:"86 DM", harga:11000},
-  {nama:"172 DM", harga:20000},
-  {nama:"257 DM", harga:29000},
-  {nama:"514 DM", harga:56000},
-  {nama:"706 DM", harga:83000}
- ],
- ff: [
-  {nama:"70 DM", harga:12000},
-  {nama:"140 DM", harga:23000},
-  {nama:"210 DM", harga:34000},
-  {nama:"355 DM", harga:45000}
- ]
+// =========================
+// KONFIGURASI UTAMA
+// =========================
+const STEP_DM = 10;        // ⬅️ UBAH DI SINI (5 / 10 / 25 / 50)
+const DM_MIN = 5;
+const DM_MAX = 1000;
+const UNTUNG = 3000;
+
+// HARGA PER DM
+const hargaPerDM = {
+ "Mobile Legends": 100,
+ "Free Fire": 110,
+ "PUBG Mobile": 120
 };
 
-function updateList(){
- let g = game.value;
- nominal.innerHTML = '<option value="">Pilih Paket</option>';
- if(!data[g]) return;
+let selectedGame = "";
 
- data[g].forEach(d=>{
-  let opt = document.createElement("option");
-  opt.value = d.harga;
-  opt.text = d.nama+" — Rp"+d.harga.toLocaleString("id-ID");
-  nominal.appendChild(opt);
- });
- total.innerText="Total: Rp0";
+// =========================
+// NAVIGASI HALAMAN
+// =========================
+function toPage(n){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById("page"+n).classList.add("active");
 }
 
+function selectGame(game){
+ selectedGame = game;
+ gameTitle.innerText = game;
+ generateDM();
+ toPage(2);
+}
+
+// =========================
+// GENERATE DIAMOND OTOMATIS
+// =========================
+function generateDM(){
+ dm.innerHTML = '<option value="">Pilih Diamond</option>';
+
+ for(let i = DM_MIN; i <= DM_MAX; i += STEP_DM){
+   let harga = (i * hargaPerDM[selectedGame]) + UNTUNG;
+
+   let o = document.createElement("option");
+   o.value = harga;
+   o.text = i + " Diamond — Rp" + harga.toLocaleString("id-ID");
+   dm.appendChild(o);
+ }
+}
+
+// =========================
+// HITUNG TOTAL
+// =========================
 function hitung(){
- total.innerText = nominal.value
- ? "Total: Rp"+nominal.value
+ total.innerText = dm.value
+ ? "Total: Rp" + Number(dm.value).toLocaleString("id-ID")
  : "Total: Rp0";
 }
 
+// =========================
+// ORDER WHATSAPP
+// =========================
 function order(){
- let g = game.options[game.selectedIndex].text;
- let p = nominal.options[nominal.selectedIndex].text;
+ if(!idgame.value || !dm.value){
+  alert("Lengkapi data dulu");
+  return;
+ }
 
- let msg=`Halo admin MEMETSTR,
+ let msg = `Halo admin MEMETSTR,
 Saya mau top up.
 
-Game: ${g}
+Game: ${selectedGame}
 ID: ${idgame.value}
-Paket: ${p}
+Paket: ${dm.options[dm.selectedIndex].text}
+Total: Rp${dm.value}
 
 Saya akan bayar dan kirim bukti.`;
 
- location.href="https://wa.me/6282258810964?text="+encodeURIComponent(msg);
+ location.href =
+ "https://wa.me/6282258810964?text=" + encodeURIComponent(msg);
 }
 </script>
-
-</body>
-</html>
