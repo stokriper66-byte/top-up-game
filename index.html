@@ -9,22 +9,23 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#f2f2f2;
+  background:#eef1f4;
   padding:20px;
 }
 .card{
-  max-width:420px;
+  max-width:430px;
   margin:auto;
   background:white;
-  border-radius:14px;
+  border-radius:16px;
   padding:20px;
-  box-shadow:0 10px 20px rgba(0,0,0,.15);
+  box-shadow:0 10px 20px rgba(0,0,0,.12);
 }
 .logo{
   text-align:center;
-  font-size:26px;
-  font-weight:bold;
-  margin-bottom:5px;
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:2px;
+  color:#ff4b2b;
 }
 .subtitle{
   text-align:center;
@@ -42,7 +43,7 @@ select,input,button{
   padding:12px;
   margin-top:6px;
   font-size:16px;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #ddd;
 }
 .total{
@@ -57,6 +58,10 @@ select,input,button{
 .qris img{
   width:220px;
   border-radius:10px;
+  border:1px solid #eee;
+}
+.upload{
+  margin-top:10px;
 }
 button{
   margin-top:15px;
@@ -80,13 +85,14 @@ button{
 <div class="card">
 
 <div class="logo">MEMETSTR</div>
-<div class="subtitle">Top Up Game Aman & Cepat</div>
+<div class="subtitle">Top Up Game • Aman • Cepat</div>
 
 <label>Pilih Game</label>
 <select id="game" onchange="isiNominal()">
   <option value="">-- Pilih Game --</option>
   <option value="Free Fire">Free Fire</option>
   <option value="Mobile Legends">Mobile Legends</option>
+  <option value="PUBG Mobile">PUBG Mobile</option>
 </select>
 
 <label>ID Game</label>
@@ -103,13 +109,19 @@ button{
 
 <div class="qris">
   <p><b>Bayar via QRIS</b></p>
+  <!-- GANTI LINK GAMBAR QRIS KAMU -->
   <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/QR_code_example.svg">
-  <p style="font-size:12px;color:#555">Scan QR lalu klik konfirmasi</p>
+  <p style="font-size:12px;color:#555">Scan QR lalu upload bukti</p>
+</div>
+
+<div class="upload">
+  <label>Upload Bukti Transfer</label>
+  <input type="file" accept="image/*">
 </div>
 
 <button onclick="orderWA()">Konfirmasi via WhatsApp</button>
 
-<div class="footer">© MEMETSTR</div>
+<div class="footer">© MEMETSTR TOP UP</div>
 
 </div>
 
@@ -124,10 +136,17 @@ function isiNominal(){
   if(g==="Free Fire"){
     add(10000,"100 Diamond");
     add(20000,"210 Diamond");
+    add(50000,"530 Diamond");
   }
   if(g==="Mobile Legends"){
     add(15000,"86 Diamond");
     add(30000,"172 Diamond");
+    add(75000,"429 Diamond");
+  }
+  if(g==="PUBG Mobile"){
+    add(15000,"60 UC");
+    add(30000,"180 UC");
+    add(60000,"600 UC");
   }
 }
 function add(harga,nama){
