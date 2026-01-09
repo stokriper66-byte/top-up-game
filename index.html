@@ -20,23 +20,16 @@ body{
   padding:20px;
   border-radius:16px;
   box-shadow:0 10px 25px rgba(0,0,0,.6);
+  animation:fade 0.8s ease;
 }
-.logo{
-  text-align:center;
-  margin-bottom:15px;
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
 }
-.logo img{
-  width:180px;
-}
-h2{
-  text-align:center;
-  margin-bottom:20px;
-}
-label{
-  font-size:14px;
-  margin-top:10px;
-  display:block;
-}
+.logo{text-align:center;margin-bottom:15px}
+.logo img{width:170px}
+h2{text-align:center}
+label{font-size:14px;margin-top:10px;display:block}
 input,select,button{
   width:100%;
   padding:12px;
@@ -45,40 +38,27 @@ input,select,button{
   border:none;
   font-size:15px;
 }
-input,select{
-  background:#2a2a2a;
-  color:#fff;
-}
-.total{
-  margin-top:15px;
-  font-size:16px;
-  font-weight:bold;
-}
+input,select{background:#2a2a2a;color:#fff}
+.total{margin-top:12px;font-weight:bold}
 button{
-  margin-top:18px;
+  margin-top:16px;
   background:linear-gradient(135deg,#25d366,#1ebe5d);
   color:#000;
   font-weight:bold;
 }
-.qris{
-  margin-top:20px;
+.qris{text-align:center;margin-top:18px}
+.qris img{width:200px;border-radius:12px}
+.footer{text-align:center;font-size:12px;margin-top:15px;opacity:.7}
+.success{
+  display:none;
   text-align:center;
 }
-.qris img{
-  width:200px;
-  border-radius:12px;
-}
-.footer{
-  text-align:center;
-  font-size:12px;
-  margin-top:15px;
-  opacity:.7;
-}
+.success h3{color:#25d366}
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="container" id="form">
 
 <div class="logo">
   <img src="logo.png" alt="MEMETSTR">
@@ -91,7 +71,6 @@ button{
   <option value="">-- Pilih Game --</option>
   <option value="Free Fire">Free Fire</option>
   <option value="Mobile Legends">Mobile Legends</option>
-  <option value="PUBG Mobile">PUBG Mobile</option>
 </select>
 
 <label>ID Game</label>
@@ -102,75 +81,62 @@ button{
   <option value="">-- Pilih Nominal --</option>
 </select>
 
+<label>Upload Bukti Transfer</label>
+<input type="file" id="bukti">
+
 <div class="total" id="total">Total : -</div>
 
-<button onclick="order()">Order via WhatsApp</button>
+<button onclick="order()">Konfirmasi via WhatsApp</button>
 
 <div class="qris">
-  <p>Atau Bayar via QRIS</p>
-  <img src="qris.jpg" alt="QRIS">
+  <p>Bayar via QRIS</p>
+  <img src="qris.jpg">
 </div>
 
-<div class="footer">
-  © MEMETSTR Top Up
+<div class="footer">© MEMETSTR</div>
 </div>
 
+<!-- HALAMAN SUKSES -->
+<div class="container success" id="success">
+  <h3>✅ Pesanan Dikirim</h3>
+  <p>Terima kasih, admin akan memproses pesanan kamu.</p>
 </div>
 
 <script>
 const harga={
-  "Free Fire":{
-    "70 DM":10000,
-    "140 DM":19000,
-    "355 DM":45000
-  },
-  "Mobile Legends":{
-    "86 DM":23000,
-    "172 DM":45000
-  },
-  "PUBG Mobile":{
-    "60 UC":15000,
-    "325 UC":75000
-  }
+ "Free Fire":{"70 DM":10000,"140 DM":19000},
+ "Mobile Legends":{"86 DM":23000,"172 DM":45000}
 };
 
 function isiNominal(){
-  const game=document.getElementById("game").value;
-  const nominal=document.getElementById("nominal");
-  nominal.innerHTML='<option value="">-- Pilih Nominal --</option>';
-  if(!game) return;
-  for(let n in harga[game]){
-    let opt=document.createElement("option");
-    opt.value=n;
-    opt.text=n;
-    nominal.appendChild(opt);
-  }
+ const g=game.value;
+ nominal.innerHTML='<option value="">-- Pilih Nominal --</option>';
+ if(!g) return;
+ for(let n in harga[g]){
+  let o=document.createElement("option");
+  o.value=n;o.text=n;
+  nominal.appendChild(o);
+ }
 }
-
 function hitung(){
-  const game=document.getElementById("game").value;
-  const nom=document.getElementById("nominal").value;
-  if(!nom) return;
-  document.getElementById("total").innerText=
-    "Total : Rp "+harga[game][nom];
+ if(!nominal.value) return;
+ total.innerText="Total : Rp "+harga[game.value][nominal.value];
 }
-
 function order(){
-  const game=document.getElementById("game").value;
-  const id=document.getElementById("idgame").value;
-  const nom=document.getElementById("nominal").value;
-  if(!game||!id||!nom){
-    alert("Lengkapi data!");
-    return;
-  }
-  const h=harga[game][nom];
-  const msg=`Halo Admin MEMETSTR
-Game: ${game}
-ID: ${id}
-Nominal: ${nom}
-Harga: Rp ${h}`;
-  location.href=
-  "https://wa.me/6282258810964?text="+encodeURIComponent(msg);
+ if(!game.value||!idgame.value||!nominal.value){
+  alert("Lengkapi data!");
+  return;
+ }
+ const msg=`Halo Admin MEMETSTR
+Game: ${game.value}
+ID: ${idgame.value}
+Nominal: ${nominal.value}
+Harga: Rp ${harga[game.value][nominal.value]}`;
+ document.getElementById("form").style.display="none";
+ document.getElementById("success").style.display="block";
+ setTimeout(()=>{
+  location.href="https://wa.me/6282258810964?text="+encodeURIComponent(msg);
+ },1200);
 }
 </script>
 
