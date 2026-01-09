@@ -9,28 +9,68 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#f2f2f2; /* BUKAN HITAM */
+  background:#f2f2f2;
   padding:20px;
 }
 .card{
   max-width:420px;
   margin:auto;
   background:white;
-  border-radius:12px;
+  border-radius:14px;
   padding:20px;
+  box-shadow:0 10px 20px rgba(0,0,0,.15);
 }
-h2{text-align:center}
+.logo{
+  text-align:center;
+  font-size:26px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+.subtitle{
+  text-align:center;
+  font-size:12px;
+  color:#777;
+  margin-bottom:15px;
+}
+label{
+  font-weight:bold;
+  display:block;
+  margin-top:10px;
+}
 select,input,button{
   width:100%;
   padding:12px;
-  margin-top:8px;
+  margin-top:6px;
   font-size:16px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+.total{
+  margin-top:10px;
+  text-align:center;
+  font-size:18px;
+}
+.qris{
+  text-align:center;
+  margin-top:15px;
+}
+.qris img{
+  width:220px;
+  border-radius:10px;
 }
 button{
+  margin-top:15px;
   background:#25D366;
   color:white;
   border:none;
-  border-radius:8px;
+  font-size:18px;
+  font-weight:bold;
+}
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#666;
+  margin-top:15px;
 }
 </style>
 </head>
@@ -38,14 +78,91 @@ button{
 <body>
 
 <div class="card">
-  <h2>MEMETSTR TOP UP</h2>
 
-  <select>
-    <option>HALAMAN SUDAH MUNCUL</option>
-  </select>
+<div class="logo">MEMETSTR</div>
+<div class="subtitle">Top Up Game Aman & Cepat</div>
 
-  <button>TEST BUTTON</button>
+<label>Pilih Game</label>
+<select id="game" onchange="isiNominal()">
+  <option value="">-- Pilih Game --</option>
+  <option value="Free Fire">Free Fire</option>
+  <option value="Mobile Legends">Mobile Legends</option>
+</select>
+
+<label>ID Game</label>
+<input type="text" id="idgame" placeholder="Masukkan ID Game">
+
+<label>Nominal</label>
+<select id="nominal" onchange="updateTotal()">
+  <option value="">-- Pilih Nominal --</option>
+</select>
+
+<div class="total">
+  Total: <b id="total">-</b>
 </div>
+
+<div class="qris">
+  <p><b>Bayar via QRIS</b></p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/QR_code_example.svg">
+  <p style="font-size:12px;color:#555">Scan QR lalu klik konfirmasi</p>
+</div>
+
+<button onclick="orderWA()">Konfirmasi via WhatsApp</button>
+
+<div class="footer">© MEMETSTR</div>
+
+</div>
+
+<script>
+function isiNominal(){
+  const g=document.getElementById("game").value;
+  const n=document.getElementById("nominal");
+  const t=document.getElementById("total");
+  n.innerHTML='<option value="">-- Pilih Nominal --</option>';
+  t.innerText='-';
+
+  if(g==="Free Fire"){
+    add(10000,"100 Diamond");
+    add(20000,"210 Diamond");
+  }
+  if(g==="Mobile Legends"){
+    add(15000,"86 Diamond");
+    add(30000,"172 Diamond");
+  }
+}
+function add(harga,nama){
+  const o=document.createElement("option");
+  o.value=harga;
+  o.text=`${nama} - Rp${harga.toLocaleString("id-ID")}`;
+  document.getElementById("nominal").add(o);
+}
+function updateTotal(){
+  const v=document.getElementById("nominal").value;
+  document.getElementById("total").innerText=
+    v ? "Rp"+Number(v).toLocaleString("id-ID") : "-";
+}
+function orderWA(){
+  const g=document.getElementById("game").value;
+  const id=document.getElementById("idgame").value;
+  const h=document.getElementById("nominal").value;
+  if(!g||!id||!h){
+    alert("Lengkapi data dulu");
+    return;
+  }
+  const pesan=
+`Halo Admin MEMETSTR
+Saya sudah bayar via QRIS
+
+Game: ${g}
+ID Game: ${id}
+Nominal: Rp${Number(h).toLocaleString("id-ID")}`;
+
+  window.open(
+    "https://wa.me/6282258810964?text="+encodeURIComponent(pesan),
+    "_blank"
+  );
+}
+</script>
 
 </body>
 </html>
