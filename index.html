@@ -1,45 +1,121 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Game</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-    }
-    a {
-      display: block;
-      text-decoration: none;
-      background: #25D366;
-      color: white;
-      padding: 15px;
-      margin: 10px 0;
-      text-align: center;
-      border-radius: 8px;
-      font-size: 18px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Up Game</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  padding:20px;
+  background:#f7f7f7;
+}
+h2{text-align:center}
+label{font-weight:bold}
+select,input,button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  font-size:16px;
+}
+button{
+  background:#25D366;
+  color:white;
+  border:none;
+  border-radius:8px;
+}
+.box{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+}
+</style>
 </head>
+
 <body>
 
 <h2>TOP UP GAME</h2>
 
-<a href="https://wa.me/6282258810964?text=Halo%20saya%20mau%20top%20up%20Free%20Fire%2010.000" target="_blank">
-Top Up Free Fire 10.000
-</a>
+<div class="box">
 
-<a href="https://wa.me/6282258810964?text=Halo%20saya%20mau%20top%20up%20Free%20Fire%2020.000" target="_blank">
-Top Up Free Fire 20.000
-</a>
+<label>Pilih Game</label>
+<select id="game" onchange="isiNominal()">
+  <option value="">-- Pilih Game --</option>
+  <option value="Free Fire">Free Fire</option>
+  <option value="Mobile Legends">Mobile Legends</option>
+</select>
 
-<a href="https://wa.me/6282258810964?text=Halo%20saya%20mau%20top%20up%20Free%20Fire%2050.000" target="_blank">
-Top Up Free Fire 50.000
-</a>
+<label>ID Game</label>
+<input type="text" id="idgame" placeholder="Masukkan ID Game">
+
+<label>Nominal</label>
+<select id="nominal" onchange="updateTotal()">
+  <option value="">-- Pilih Nominal --</option>
+</select>
+
+<p>Total: <b id="total">-</b></p>
+
+<button onclick="orderWA()">Order via WhatsApp</button>
+
+</div>
+
+<script>
+function isiNominal(){
+  const game=document.getElementById("game").value;
+  const nominal=document.getElementById("nominal");
+  const total=document.getElementById("total");
+  nominal.innerHTML='<option value="">-- Pilih Nominal --</option>';
+  total.innerText="-";
+
+  if(game==="Free Fire"){
+    tambah(10000,"100 Diamond");
+    tambah(20000,"210 Diamond");
+    tambah(50000,"530 Diamond");
+  }
+  if(game==="Mobile Legends"){
+    tambah(15000,"86 Diamond");
+    tambah(30000,"172 Diamond");
+    tambah(75000,"429 Diamond");
+  }
+}
+
+function tambah(harga,nama){
+  const nominal=document.getElementById("nominal");
+  const opt=document.createElement("option");
+  opt.value=harga;
+  opt.text=nama+" - Rp"+harga.toLocaleString("id-ID");
+  nominal.add(opt);
+}
+
+function updateTotal(){
+  const n=document.getElementById("nominal").value;
+  document.getElementById("total").innerText=
+    n ? "Rp"+Number(n).toLocaleString("id-ID") : "-";
+}
+
+function orderWA(){
+  const game=document.getElementById("game").value;
+  const id=document.getElementById("idgame").value;
+  const harga=document.getElementById("nominal").value;
+
+  if(!game||!id||!harga){
+    alert("Lengkapi data dulu");
+    return;
+  }
+
+  const pesan=
+`Halo saya mau top up
+Game: ${game}
+ID Game: ${id}
+Nominal: Rp${Number(harga).toLocaleString("id-ID")}`;
+
+  window.open(
+    "https://wa.me/6282258810964?text="+encodeURIComponent(pesan),
+    "_blank"
+  );
+}
+</script>
 
 </body>
 </html>
