@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Game</title>
+  <style>
+    body {
+      font-family: serif;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 36px;
+    }
+    select, input, button {
+      margin: 10px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TOP UP GAME</h1>
+
+  <label>Game</label><br>
+  <select id="game" onchange="updateNominal()">
+    <option value="">Pilih Game</option>
+    <option value="Free Fire">Free Fire</option>
+  </select>
+
+  <br>
+
+  <label>ID Game</label><br>
+  <input type="text" id="idgame" placeholder="Masukkan ID Game">
+
+  <br>
+
+  <label>Nominal</label><br>
+  <select id="nominal" onchange="updateTotal()">
+    <option value="">Pilih Nominal</option>
+  </select>
+
+  <p>Total: <strong id="total">-</strong></p>
+
+  <button onclick="orderWA()">Order WhatsApp</button>
+
+  <script>
+    function updateNominal() {
+      const game = document.getElementById("game").value;
+      const nominal = document.getElementById("nominal");
+      const total = document.getElementById("total");
+
+      nominal.innerHTML = '<option value="">Pilih Nominal</option>';
+      total.innerText = "-";
+
+      if (game === "Free Fire") {
+        nominal.innerHTML += `
+          <option value="10000">100 Diamond - Rp10.000</option>
+          <option value="20000">210 Diamond - Rp20.000</option>
+          <option value="50000">530 Diamond - Rp50.000</option>
+        `;
+      }
+    }
+
+    function updateTotal() {
+      const nominal = document.getElementById("nominal").value;
+      const total = document.getElementById("total");
+
+      total.innerText = nominal ? "Rp" + Number(nominal).toLocaleString("id-ID") : "-";
+    }
+
+    function orderWA() {
+      const game = document.getElementById("game").value;
+      const id = document.getElementById("idgame").value;
+      const nominal = document.getElementById("nominal").value;
+
+      if (!game  !id  !nominal) {
+        alert("Lengkapi data dulu");
+        return;
+      }
+
+      const pesan = `Top Up Game
+Game: ${game}
+ID Game: ${id}
+Nominal: Rp${Number(nominal).toLocaleString("id-ID")}`;
+
+      const wa = "https://wa.me/6282258810964?text=" + encodeURIComponent(pesan);
+      window.open(wa, "_blank");
+    }
+  </script>
+
+</body>
+</html>
