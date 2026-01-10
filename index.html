@@ -1,81 +1,179 @@
-<script>
-// =========================
-// KONFIGURASI UTAMA
-// =========================
-const STEP_DM = 10;        // ⬅️ UBAH DI SINI (5 / 10 / 25 / 50)
-const DM_MIN = 5;
-const DM_MAX = 1000;
-const UNTUNG = 3000;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEMETSTR TOP UP</title>
 
-// HARGA PER DM
-const hargaPerDM = {
- "Mobile Legends": 100,
- "Free Fire": 110,
- "PUBG Mobile": 120
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: white;
+  padding: 15px;
+}
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: #111;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00f2ff;
+}
+.logo {
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  color: #00f2ff;
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+label {
+  margin-top: 10px;
+  display: block;
+  font-weight: bold;
+}
+select, input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+}
+button {
+  background: #00f2ff;
+  color: black;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.harga {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #00ff88;
+}
+.payment {
+  margin-top: 20px;
+  font-size: 14px;
+  background: #1a1a1a;
+  padding: 10px;
+  border-radius: 8px;
+}
+.footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 12px;
+  color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="logo">MEMETSTR TOP UP</div>
+  <div class="subtitle">Fast • Aman • Terpercaya</div>
+
+  <label>Game</label>
+  <select id="game">
+    <option value="ml">Mobile Legends</option>
+    <option value="ff">Free Fire</option>
+    <option value="pubg">PUBG Mobile</option>
+    <option value="genshin">Genshin Impact</option>
+  </select>
+
+  <label>ID Game</label>
+  <input type="text" id="idgame" placeholder="Masukkan ID / Server">
+
+  <label>Nominal</label>
+  <select id="nominal"></select>
+
+  <div class="harga" id="harga">Total: -</div>
+
+  <button onclick="order()">ORDER VIA WHATSAPP</button>
+
+  <div class="payment">
+    <b>PAYMENT:</b><br>
+    ✅ DANA<br>
+    ✅ OVO<br>
+    ✅ GOPAY<br>
+    ✅ QRIS
+  </div>
+
+  <div class="footer">
+    © 2026 MEMETSTR TOP UP
+  </div>
+</div>
+
+<script>
+const harga = {
+  ml: {
+    "86 DM": 23000,
+    "172 DM": 45000,
+    "257 DM": 67000
+  },
+  ff: {
+    "70 DM": 10000,
+    "140 DM": 19000,
+    "355 DM": 45000
+  },
+  pubg: {
+    "60 UC": 15000,
+    "325 UC": 75000
+  },
+  genshin: {
+    "60 Genesis": 15000,
+    "300 Genesis": 75000
+  }
 };
 
-let selectedGame = "";
+const game = document.getElementById("game");
+const nominal = document.getElementById("nominal");
+const hargaText = document.getElementById("harga");
 
-// =========================
-// NAVIGASI HALAMAN
-// =========================
-function toPage(n){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById("page"+n).classList.add("active");
+function isiNominal() {
+  nominal.innerHTML = "";
+  for (let n in harga[game.value]) {
+    let opt = document.createElement("option");
+    opt.value = n;
+    opt.textContent = n;
+    nominal.appendChild(opt);
+  }
+  updateHarga();
 }
 
-function selectGame(game){
- selectedGame = game;
- gameTitle.innerText = game;
- generateDM();
- toPage(2);
+function updateHarga() {
+  hargaText.innerText =
+    "Total: Rp" + harga[game.value][nominal.value];
 }
 
-// =========================
-// GENERATE DIAMOND OTOMATIS
-// =========================
-function generateDM(){
- dm.innerHTML = '<option value="">Pilih Diamond</option>';
+function order() {
+  const id = document.getElementById("idgame").value;
+  if (!id) {
+    alert("ID Game wajib diisi");
+    return;
+  }
 
- for(let i = DM_MIN; i <= DM_MAX; i += STEP_DM){
-   let harga = (i * hargaPerDM[selectedGame]) + UNTUNG;
+  const wa = "62822258810964";
+  const pesan =
+`Halo Admin MEMETSTR TOP UP
+Game: ${game.options[game.selectedIndex].text}
+ID: ${id}
+Nominal: ${nominal.value}
+Harga: Rp${harga[game.value][nominal.value]}`;
 
-   let o = document.createElement("option");
-   o.value = harga;
-   o.text = i + " Diamond — Rp" + harga.toLocaleString("id-ID");
-   dm.appendChild(o);
- }
+  location.href =
+    "https://wa.me/" + wa + "?text=" + encodeURIComponent(pesan);
 }
 
-// =========================
-// HITUNG TOTAL
-// =========================
-function hitung(){
- total.innerText = dm.value
- ? "Total: Rp" + Number(dm.value).toLocaleString("id-ID")
- : "Total: Rp0";
-}
-
-// =========================
-// ORDER WHATSAPP
-// =========================
-function order(){
- if(!idgame.value || !dm.value){
-  alert("Lengkapi data dulu");
-  return;
- }
-
- let msg = `Halo admin MEMETSTR,
-Saya mau top up.
-
-Game: ${selectedGame}
-ID: ${idgame.value}
-Paket: ${dm.options[dm.selectedIndex].text}
-Total: Rp${dm.value}
-
-Saya akan bayar dan kirim bukti.`;
-
- location.href =
- "https://wa.me/6282258810964?text=" + encodeURIComponent(msg);
-}
+game.addEventListener("change", isiNominal);
+nominal.addEventListener("change", updateHarga);
+isiNominal();
 </script>
+
+</body>
+</html>
