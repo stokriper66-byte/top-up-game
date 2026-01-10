@@ -7,172 +7,155 @@
 
 <style>
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  background: #5b2dbd;
   color: white;
+}
+
+.header {
   padding: 15px;
+  font-size: 22px;
+  font-weight: bold;
 }
+
 .container {
-  max-width: 420px;
-  margin: auto;
-  background: #111;
-  padding: 20px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.card {
+  background: #6f44d8;
   border-radius: 12px;
-  box-shadow: 0 0 15px #00f2ff;
+  padding: 12px;
+  cursor: pointer;
 }
-.logo {
-  text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #00f2ff;
-  margin-bottom: 10px;
+
+.card.active {
+  outline: 3px solid #00eaff;
 }
-.subtitle {
-  text-align: center;
-  font-size: 13px;
-  color: #aaa;
-  margin-bottom: 20px;
-}
-label {
-  margin-top: 10px;
-  display: block;
-  font-weight: bold;
-}
-select, input, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 8px;
-  border: none;
-}
-button {
-  background: #00f2ff;
-  color: black;
-  font-weight: bold;
-  margin-top: 15px;
-}
-.harga {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #00ff88;
-}
-.payment {
-  margin-top: 20px;
+
+.title {
   font-size: 14px;
-  background: #1a1a1a;
-  padding: 10px;
-  border-radius: 8px;
+  margin-bottom: 5px;
 }
-.footer {
-  text-align: center;
-  margin-top: 15px;
+
+.price {
+  font-size: 16px;
+  color: #00eaff;
+  font-weight: bold;
+}
+
+.old {
+  text-decoration: line-through;
+  color: #ff9aa2;
   font-size: 12px;
-  color: #888;
+}
+
+.badge {
+  margin-top: 8px;
+  display: flex;
+  gap: 5px;
+}
+
+.disc {
+  background: #38bdf8;
+  color: black;
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.instant {
+  background: white;
+  color: black;
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #4c1d95;
+  padding: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  background: #38bdf8;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <div class="logo">MEMETSTR TOP UP</div>
-  <div class="subtitle">Fast • Aman • Terpercaya</div>
+<div class="header">MEMETSTR TOP UP</div>
 
-  <label>Game</label>
-  <select id="game">
-    <option value="ml">Mobile Legends</option>
-    <option value="ff">Free Fire</option>
-    <option value="pubg">PUBG Mobile</option>
-    <option value="genshin">Genshin Impact</option>
-  </select>
+<div class="container" id="list"></div>
 
-  <label>ID Game</label>
-  <input type="text" id="idgame" placeholder="Masukkan ID / Server">
-
-  <label>Nominal</label>
-  <select id="nominal"></select>
-
-  <div class="harga" id="harga">Total: -</div>
-
-  <button onclick="order()">ORDER VIA WHATSAPP</button>
-
-  <div class="payment">
-    <b>PAYMENT:</b><br>
-    ✅ DANA<br>
-    ✅ OVO<br>
-    ✅ GOPAY<br>
-    ✅ QRIS
-  </div>
-
-  <div class="footer">
-    © 2026 MEMETSTR TOP UP
-  </div>
+<div class="bottom">
+  <button onclick="order()">Pesan Sekarang</button>
 </div>
 
 <script>
-const harga = {
-  ml: {
-    "86 DM": 23000,
-    "172 DM": 45000,
-    "257 DM": 67000
-  },
-  ff: {
-    "70 DM": 10000,
-    "140 DM": 19000,
-    "355 DM": 45000
-  },
-  pubg: {
-    "60 UC": 15000,
-    "325 UC": 75000
-  },
-  genshin: {
-    "60 Genesis": 15000,
-    "300 Genesis": 75000
-  }
-};
+const produk = [
+  { nama: "5 Diamonds", harga: 784, old: 1000, disc: "22%" },
+  { nama: "12 Diamonds", harga: 1700, old: 2036, disc: "17%" },
+  { nama: "50 Diamonds", harga: 6551, old: 8000, disc: "18%" },
+  { nama: "70 Diamonds", harga: 8916, old: 10182, disc: "12%" },
+  { nama: "100 Diamonds", harga: 13102, old: 14883, disc: "12%" },
+  { nama: "140 Diamonds", harga: 17906, old: 20364, disc: "12%" },
+  { nama: "210 Diamonds", harga: 26748, old: 30546, disc: "12%" },
+  { nama: "300 Diamonds", harga: 39306, old: 46297, disc: "15%" }
+];
 
-const game = document.getElementById("game");
-const nominal = document.getElementById("nominal");
-const hargaText = document.getElementById("harga");
+let pilih = null;
+const list = document.getElementById("list");
 
-function isiNominal() {
-  nominal.innerHTML = "";
-  for (let n in harga[game.value]) {
-    let opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = n;
-    nominal.appendChild(opt);
-  }
-  updateHarga();
-}
-
-function updateHarga() {
-  hargaText.innerText =
-    "Total: Rp" + harga[game.value][nominal.value];
-}
+produk.forEach((p, i) => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `
+    <div class="title">${p.nama}</div>
+    <div class="price">Rp${p.harga.toLocaleString()}</div>
+    <div class="old">Rp${p.old.toLocaleString()}</div>
+    <div class="badge">
+      <div class="disc">Disc ${p.disc}</div>
+      <div class="instant">⚡ INSTAN</div>
+    </div>
+  `;
+  div.onclick = () => {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+    div.classList.add("active");
+    pilih = p;
+  };
+  list.appendChild(div);
+});
 
 function order() {
-  const id = document.getElementById("idgame").value;
-  if (!id) {
-    alert("ID Game wajib diisi");
+  if (!pilih) {
+    alert("Pilih produk dulu");
     return;
   }
-
   const wa = "62822258810964";
   const pesan =
-`Halo Admin MEMETSTR TOP UP
-Game: ${game.options[game.selectedIndex].text}
-ID: ${id}
-Nominal: ${nominal.value}
-Harga: Rp${harga[game.value][nominal.value]}`;
+    `Halo Admin MEMETSTR TOP UP
+Produk: ${pilih.nama}
+Harga: Rp${pilih.harga.toLocaleString()}
+Pengiriman: Instan`;
 
   location.href =
     "https://wa.me/" + wa + "?text=" + encodeURIComponent(pesan);
 }
-
-game.addEventListener("change", isiNominal);
-nominal.addEventListener("change", updateHarga);
-isiNominal();
 </script>
 
 </body>
