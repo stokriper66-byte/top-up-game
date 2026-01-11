@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Top Up Game</title>
+<title>MEMETSTR Top Up Game</title>
 
 <style>
 body{
@@ -13,12 +13,27 @@ body{
   color:#fff
 }
 .container{max-width:500px;margin:auto;padding:15px}
-h2,h3{text-align:center}
+.header{
+  text-align:center;
+  padding:15px 0;
+  border-bottom:1px solid #222;
+  margin-bottom:15px
+}
+.logo{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:2px;
+  color:#3b82f6
+}
+.tagline{
+  font-size:12px;
+  color:#9ca3af
+}
 .step{display:none}
 .step.active{display:block}
-
+h3{font-size:16px;margin:10px 0}
 .card{
-  background:#111;
+  background:#0b0b0b;
   padding:15px;
   border-radius:12px;
   margin:10px 0;
@@ -27,41 +42,37 @@ h2,h3{text-align:center}
   transition:.2s
 }
 .card:hover{border-color:#3b82f6}
-.card.active{border-color:#3b82f6}
-
-button{
+.card small{color:#9ca3af;font-size:12px}
+.price{color:#60a5fa;font-weight:bold}
+input{
   width:100%;
   padding:12px;
-  border:none;
   border-radius:10px;
+  border:1px solid #222;
+  background:#0b0b0b;
+  color:white;
+  margin-top:8px
+}
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
   background:#3b82f6;
   color:white;
   font-size:16px;
   font-weight:bold;
-  margin-top:10px;
+  margin-top:15px;
   cursor:pointer
 }
-
-input{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-  margin-top:8px;
-  background:#111;
-  color:white;
-  border:1px solid #222
-}
-
-.price{color:#60a5fa;font-weight:bold}
-
 .box{
-  background:#111;
+  background:#0b0b0b;
+  border:1px solid #222;
   padding:12px;
-  border-radius:10px;
-  border:1px solid #222
+  border-radius:12px;
+  font-size:14px
 }
-
+.pay{text-align:center}
 .pay img{
   height:32px;
   margin:6px;
@@ -73,70 +84,104 @@ input{
   text-align:center;
   margin-top:6px
 }
+.footer{
+  text-align:center;
+  font-size:11px;
+  color:#6b7280;
+  margin-top:15px
+}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<h2>TOP UP GAME</h2>
-<p class="note">Cepat • Aman • Manual</p>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">MEMETSTR</div>
+  <div class="tagline">Top Up Game Resmi • Fast Respon • Manual Process</div>
+</div>
 
 <!-- STEP 1 -->
 <div class="step active" id="step1">
-  <h3>Pilih Game</h3>
-  <div class="card" onclick="pilihGame('Mobile Legends')">Mobile Legends</div>
-  <div class="card" onclick="pilihGame('Free Fire')">Free Fire</div>
-  <div class="card" onclick="pilihGame('PUBG Mobile')">PUBG Mobile</div>
-  <div class="card" onclick="pilihGame('Genshin Impact')">Genshin Impact</div>
+  <h3>1️⃣ Pilih Game</h3>
+  <div class="card" onclick="pilihGame('Mobile Legends')">
+    Mobile Legends<br><small>Diamonds</small>
+  </div>
+  <div class="card" onclick="pilihGame('Free Fire')">
+    Free Fire<br><small>Diamonds</small>
+  </div>
+  <div class="card" onclick="pilihGame('PUBG Mobile')">
+    PUBG Mobile<br><small>UC</small>
+  </div>
+  <div class="card" onclick="pilihGame('Genshin Impact')">
+    Genshin Impact<br><small>Genesis Crystal</small>
+  </div>
 </div>
 
 <!-- STEP 2 -->
 <div class="step" id="step2">
-  <h3>Masukkan ID</h3>
-  <input id="idgame" placeholder="ID Game (angka)">
+  <h3>2️⃣ Masukkan User ID</h3>
+  <input id="idgame" placeholder="User ID">
   <input id="server" placeholder="Server (jika ada)">
   <button onclick="keStep3()">Lanjut</button>
 </div>
 
 <!-- STEP 3 -->
 <div class="step" id="step3">
-  <h3>Pilih Nominal</h3>
-  <div class="card" onclick="pilihNominal('86 Diamonds',23000)">
-    86 Diamonds<br><span class="price">Rp23.000</span>
-  </div>
-  <div class="card" onclick="pilihNominal('172 Diamonds',45000)">
-    172 Diamonds<br><span class="price">Rp45.000</span>
-  </div>
-  <div class="card" onclick="pilihNominal('257 Diamonds',67000)">
-    257 Diamonds<br><span class="price">Rp67.000</span>
-  </div>
+  <h3>3️⃣ Pilih Nominal</h3>
+  <div id="listNominal"></div>
 </div>
 
 <!-- STEP 4 -->
 <div class="step" id="step4">
-  <h3>Ringkasan Pesanan</h3>
+  <h3>4️⃣ Detail Pesanan</h3>
   <div class="box" id="ringkasan"></div>
-  <button onclick="keStep5()">Lanjut Pembayaran</button>
+  <button onclick="keStep5()">Lanjut ke Pembayaran</button>
 </div>
 
 <!-- STEP 5 -->
 <div class="step" id="step5">
-  <h3>Pembayaran</h3>
-  <div class="pay" style="text-align:center">
+  <h3>5️⃣ Pembayaran</h3>
+  <div class="pay">
     <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/QRIS_logo.svg">
     <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
     <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/Logo_ovo_purple.svg">
     <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg">
   </div>
-  <p class="note">Pembayaran manual • Admin online</p>
+  <p class="note">Pembayaran manual • Kirim bukti ke admin</p>
   <button onclick="orderWA()">Pesan via WhatsApp</button>
+</div>
+
+<div class="footer">
+© MEMETSTR • Top Up Game Indonesia
 </div>
 
 </div>
 
 <script>
 let game="",uid="",server="",nominal="",harga=0;
+
+const produk={
+ "Mobile Legends":[
+  {n:"86 Diamonds",h:23000},
+  {n:"172 Diamonds",h:45000},
+  {n:"257 Diamonds",h:67000}
+ ],
+ "Free Fire":[
+  {n:"70 Diamonds",h:9000},
+  {n:"140 Diamonds",h:18000},
+  {n:"355 Diamonds",h:45000}
+ ],
+ "PUBG Mobile":[
+  {n:"60 UC",h:13000},
+  {n:"325 UC",h:70000}
+ ],
+ "Genshin Impact":[
+  {n:"60 Genesis",h:15000},
+  {n:"300 Genesis",h:72000}
+ ]
+};
 
 function show(step){
  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
@@ -151,18 +196,27 @@ function pilihGame(g){
 function keStep3(){
  uid=idgame.value.trim();
  server=server.value.trim();
- if(!uid) return alert("ID wajib diisi");
+ if(!uid) return alert("User ID wajib diisi");
+ const list=document.getElementById("listNominal");
+ list.innerHTML="";
+ produk[game].forEach(p=>{
+  list.innerHTML+=`
+  <div class="card" onclick="pilihNominal('${p.n}',${p.h})">
+    ${p.n}<br><span class="price">Rp${p.h.toLocaleString()}</span>
+  </div>`;
+ });
  show('step3');
 }
 
 function pilihNominal(n,h){
- nominal=n; harga=h;
- document.getElementById('ringkasan').innerHTML=
+ nominal=n;
+ harga=h;
+ document.getElementById("ringkasan").innerHTML=
  `Game : ${game}<br>
- ID : ${uid}<br>
- Server : ${server || '-'}<br>
- Nominal : ${nominal}<br>
- <b>Total : Rp${harga.toLocaleString()}</b>`;
+ User ID : ${uid}<br>
+ Server : ${server||"-"}<br>
+ Nominal : ${nominal}<br><br>
+ <b>Total Bayar : Rp${harga.toLocaleString()}</b>`;
  show('step4');
 }
 
@@ -171,11 +225,12 @@ function keStep5(){ show('step5'); }
 function orderWA(){
  const text=
 `TOP UP ${game}
-ID: ${uid}
-Server: ${server || '-'}
+User ID: ${uid}
+Server: ${server||"-"}
 Nominal: ${nominal}
 TOTAL: Rp${harga.toLocaleString()}
-Bayar: QRIS / DANA / OVO / GOPAY`;
+
+MEMETSTR`;
  location.href="https://wa.me/6282258810964?text="+encodeURIComponent(text);
 }
 </script>
