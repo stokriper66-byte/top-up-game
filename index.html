@@ -7,150 +7,160 @@
 
 <style>
 body{
-  margin:0;font-family:Arial;
-  background:linear-gradient(135deg,#020617,#1e3a8a);
-  color:white
+ margin:0;font-family:Arial;
+ background:linear-gradient(135deg,#020617,#1e3a8a);
+ color:white;padding-bottom:90px
 }
 .header{text-align:center;padding:15px}
 .logo{font-size:28px;font-weight:bold;color:#38bdf8}
-.section{padding:10px}
+.section{padding:12px}
 select,input{
-  width:100%;padding:10px;border-radius:8px;border:none;margin-top:6px
+ width:100%;padding:11px;border-radius:10px;border:none;margin-top:6px
 }
 .grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:10px;margin-top:10px
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:10px;margin-top:10px
 }
 .card{
-  background:#1e40af;padding:12px;border-radius:12px;cursor:pointer
+ background:linear-gradient(135deg,#1e3a8a,#2563eb);
+ padding:12px;border-radius:14px;
+ cursor:pointer;box-shadow:0 6px 15px #0006
 }
 .card:hover{outline:2px solid #38bdf8}
 .price{color:#22d3ee;font-weight:bold}
 .cart{
-  background:#020617;padding:10px;border-radius:10px;margin-top:10px
+ background:#020617;padding:10px;border-radius:12px;margin-top:10px
 }
 .cart-item{
-  display:flex;justify-content:space-between;align-items:center;
-  margin:4px 0
+ display:flex;justify-content:space-between;align-items:center;
+ margin:4px 0
 }
 .del{
-  background:red;color:white;border:none;border-radius:6px;
-  padding:2px 6px;cursor:pointer
+ background:red;color:white;border:none;border-radius:6px;
+ padding:2px 6px;cursor:pointer
 }
 .bottom{
-  position:fixed;bottom:0;width:100%;
-  padding:10px;background:#020617
+ position:fixed;bottom:0;width:100%;
+ padding:10px;background:#020617
 }
 button{
-  width:100%;padding:12px;border:none;border-radius:10px;
-  background:#38bdf8;font-size:16px;font-weight:bold
+ width:100%;padding:13px;border:none;border-radius:12px;
+ background:#38bdf8;font-size:16px;font-weight:bold
 }
-.clear{
-  background:#ef4444;margin-top:6px
-}
+.clear{background:#ef4444;margin-top:6px}
+.pay img{height:24px;margin:4px}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <div class="logo">TOP UP GAME</div>
-  <small>Cepat • Aman • Instan</small>
+ <div class="logo">TOP UP GAME</div>
+ <small>Cepat • Aman • Instan</small>
 </div>
 
 <div class="section">
-  <label>Pilih Game</label>
-  <select id="game" onchange="renderProduk()">
-    <option value="ml">Mobile Legends</option>
-    <option value="ff">Free Fire</option>
-    <option value="pubg">PUBG Mobile</option>
-    <option value="genshin">Genshin Impact</option>
-  </select>
+ <label>Pilih Game</label>
+ <select id="game" onchange="renderProduk();toggleServer()">
+  <option value="ml">Mobile Legends</option>
+  <option value="ff">Free Fire</option>
+  <option value="pubg">PUBG Mobile</option>
+ </select>
 
-  <label>ID Game</label>
-  <input id="idgame" inputmode="numeric" placeholder="Hanya angka">
+ <label>Nama Pembeli</label>
+ <input id="nama" placeholder="Nama WhatsApp">
 
+ <label>ID Game</label>
+ <input id="idgame" inputmode="numeric" placeholder="Hanya angka">
+
+ <div id="serverBox">
   <label>Server</label>
-  <input id="server" inputmode="numeric" placeholder="Hanya angka">
+  <input id="server" inputmode="numeric" placeholder="Contoh: 1234">
+ </div>
+
+ <label>Metode Pembayaran</label>
+ <select id="bayar">
+  <option>QRIS</option>
+  <option>DANA</option>
+  <option>OVO</option>
+  <option>GOPAY</option>
+  <option>PULSA</option>
+ </select>
 </div>
 
 <div class="section grid" id="produk"></div>
 
 <div class="section cart">
-  <b>Keranjang:</b>
-  <div id="cart">Belum ada item</div>
-  <hr>
-  <div id="total">Total: Rp0</div>
-  <button class="clear" onclick="clearCart()">Kosongkan Keranjang</button>
+ <b>Keranjang:</b>
+ <div id="cart">Belum ada item</div>
+ <hr>
+ <div id="total">Total: Rp0</div>
+ <button class="clear" onclick="clearCart()">Kosongkan Keranjang</button>
+</div>
+
+<div class="section pay">
+ <b>Pembayaran:</b><br>
+ <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QRIS_logo.svg">
+ <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
+ <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Logo_ovo_purple.svg">
+ <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Gopay_logo.svg">
 </div>
 
 <div class="bottom">
-  <button onclick="order()">Pesan via WhatsApp</button>
+ <button onclick="order()">Pesan via WhatsApp</button>
 </div>
 
 <script>
-const untung = 2000;
-const admin = 1000;
+const untung=2000, admin=1000;
 
-const data = {
+const data={
  ml:[
   {n:"5 DM",m:1200},{n:"12 DM",m:2500},{n:"44 DM",m:9500},
-  {n:"86 DM",m:21000},{n:"172 DM",m:43000}
+  {n:"86 DM",m:21000},{n:"172 DM",m:43000},{n:"257 DM",m:63000}
  ],
  ff:[
-  {n:"70 DM",m:8000},{n:"140 DM",m:17000},{n:"355 DM",m:45000}
+  {n:"70 DM",m:8000},{n:"140 DM",m:17000},
+  {n:"355 DM",m:45000},{n:"720 DM",m:90000}
  ],
  pubg:[
   {n:"60 UC",m:13000},{n:"325 UC",m:70000}
- ],
- genshin:[
-  {n:"60 Genesis",m:14000},{n:"300 Genesis",m:72000}
  ]
 };
 
 let keranjang=[];
 
+function toggleServer(){
+ serverBox.style.display = game.value==="ff" ? "none":"block";
+}
+
 function renderProduk(){
- const g=game.value;
  produk.innerHTML="";
- data[g].forEach((d,i)=>{
-  const jual=d.m+untung;
+ data[game.value].forEach(d=>{
+  const h=d.m+untung;
   produk.innerHTML+=`
-  <div class="card" onclick="add('${d.n}',${jual})">
-    <div>${d.n}</div>
-    <div class="price">Rp${jual.toLocaleString()}</div>
-    <small>⚡ Instan</small>
+  <div class="card" onclick="add('${d.n}',${h})">
+   <div>${d.n}</div>
+   <div class="price">Rp${h.toLocaleString()}</div>
+   <small>⚡ Instan</small>
   </div>`;
  });
 }
 
-function add(n,h){
- keranjang.push({n,h});
- update();
-}
-
-function del(i){
- keranjang.splice(i,1);
- update();
-}
-
-function clearCart(){
- keranjang=[];
- update();
-}
+function add(n,h){keranjang.push({n,h});update();}
+function clearCart(){keranjang=[];update();}
+function del(i){keranjang.splice(i,1);update();}
 
 function update(){
  if(!keranjang.length){
   cart.innerText="Belum ada item";
-  total.innerText="Total: Rp0";
-  return;
+  total.innerText="Total: Rp0";return;
  }
  cart.innerHTML="";
  keranjang.forEach((i,x)=>{
   cart.innerHTML+=`
   <div class="cart-item">
-    <span>${i.n}</span>
-    <button class="del" onclick="del(${x})">X</button>
+   <span>${i.n}</span>
+   <button class="del" onclick="del(${x})">X</button>
   </div>`;
  });
  const sub=keranjang.reduce((a,b)=>a+b.h,0);
@@ -161,27 +171,30 @@ function update(){
 }
 
 function order(){
- if(!idgame.value||!server.value) return alert("ID & Server wajib diisi");
- if(!/^[0-9]+$/.test(idgame.value+server.value)) return alert("Hanya angka");
+ if(!nama.value) return alert("Nama wajib diisi");
+ if(!idgame.value) return alert("ID wajib diisi");
+ if(game.value!=="ff" && !server.value) return alert("Server wajib diisi");
  if(!keranjang.length) return alert("Pilih produk dulu");
 
  const totalBayar=keranjang.reduce((a,b)=>a+b.h,0)+admin;
 
- const pesan=
-`TOP UP ${game.options[game.selectedIndex].text}
+ let pesan=
+`/pay
+TOP UP ${game.options[game.selectedIndex].text}
+Nama: ${nama.value}
 ID: ${idgame.value}
-Server: ${server.value}
+${game.value!=="ff"?"Server: "+server.value:""}
 
 Pesanan:
 ${keranjang.map(i=>"- "+i.n).join("\n")}
 
 TOTAL: Rp${totalBayar.toLocaleString()}
-Bayar: QRIS / DANA / OVO / GOPAY / PULSA`;
+Bayar: ${bayar.value}`;
 
- location.href=
- "https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
+ location.href="https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
 }
 
+toggleServer();
 renderProduk();
 </script>
 
