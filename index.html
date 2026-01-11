@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Top Up Game</title>
+<title>STOKRIPER TOP UP</title>
 
 <style>
 body{
@@ -80,24 +80,22 @@ button{
   font-size:16px;
   font-weight:bold;
 }
-.clear{
-  background:#ef4444;
-  margin-top:8px;
-}
-.space{height:120px}
+.clear{background:#ef4444;margin-top:8px}
+.admin{background:#22c55e;margin-top:8px}
+.space{height:140px}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <div class="logo">TOP UP GAME</div>
-  <small>Cepat • Aman • Instan</small>
+  <div class="logo">STOKRIPER TOP UP</div>
+  <small>Official Store • 24 Jam</small>
 </div>
 
 <div class="section">
   <label>Pilih Game</label>
-  <select id="game" onchange="renderProduk()">
+  <select id="game">
     <option value="ml">Mobile Legends</option>
     <option value="ff">Free Fire</option>
     <option value="pubg">PUBG Mobile</option>
@@ -110,7 +108,7 @@ button{
   <label>ID Game</label>
   <input id="idgame" inputmode="numeric" placeholder="Hanya angka">
 
-  <label>Server (ML saja)</label>
+  <label id="labelServer">Server (ML)</label>
   <input id="server" inputmode="numeric" placeholder="Contoh: 1234">
 
   <label>Metode Pembayaran</label>
@@ -129,8 +127,9 @@ button{
   <b>Keranjang:</b>
   <div id="cart">Belum ada item</div>
   <hr>
-  <div id="total">Total: Rp0</div>
+  <div id="total">TOTAL: Rp0</div>
   <button class="clear" onclick="clearCart()">Kosongkan Keranjang</button>
+  <button class="admin" onclick="adminLogin()">Mode Admin</button>
 </div>
 
 <div class="section pay">
@@ -145,9 +144,13 @@ button{
 </div>
 
 <script>
-const untung = 2000;
-const admin = 1000;
+/* ===== CONFIG ===== */
+const UNTUNG = 2000;
+const ADMIN = 1000;
+const PASSWORD_ADMIN = "1234";
+const WA = "6282258810964";
 
+/* ===== DATA ===== */
 const data = {
  ml:[
   {n:"5 DM",m:1200},{n:"12 DM",m:2500},{n:"44 DM",m:9500},
@@ -164,14 +167,17 @@ const data = {
   {n:"60 Genesis",m:14000},{n:"300 Genesis",m:72000}
  ]
 };
+Object.freeze(data);
 
+/* ===== STATE ===== */
 let keranjang=[];
+let adminMode=false;
 
+/* ===== LOGIC ===== */
 function renderProduk(){
- const g=game.value;
  produk.innerHTML="";
- data[g].forEach(d=>{
-  const jual=d.m+untung;
+ data[game.value].forEach(d=>{
+  const jual=d.m+UNTUNG;
   produk.innerHTML+=`
   <div class="card" onclick="add('${d.n}',${jual})">
     <div>${d.n}</div>
@@ -181,25 +187,23 @@ function renderProduk(){
  });
 }
 
-function add(n,h){
- keranjang.push({n,h});
- update();
-}
+function add(n,h){keranjang.push({n,h});update();}
 
 function delItem(i){
+ if(!adminMode) return alert("Fitur Admin");
  keranjang.splice(i,1);
  update();
 }
 
 function clearCart(){
- keranjang=[];
- update();
+ if(!adminMode) return alert("Fitur Admin");
+ keranjang=[];update();
 }
 
 function update(){
  if(!keranjang.length){
   cart.innerText="Belum ada item";
-  total.innerText="Total: Rp0";
+  total.innerText="TOTAL: Rp0";
   return;
  }
  cart.innerHTML="";
@@ -211,36 +215,48 @@ function update(){
   </div>`;
  });
  const sub=keranjang.reduce((a,b)=>a+b.h,0);
- total.innerText=
- `Subtotal: Rp${sub.toLocaleString()}
- Admin: Rp${admin.toLocaleString()}
- TOTAL: Rp${(sub+admin).toLocaleString()}`;
+ total.innerText="TOTAL: Rp"+(sub+ADMIN).toLocaleString();
+}
+
+function adminLogin(){
+ const p=prompt("Password Admin");
+ if(p===PASSWORD_ADMIN){
+  adminMode=true;
+  alert("Admin Mode Aktif");
+ }else alert("Password Salah");
 }
 
 function order(){
- if(!nama.value) return alert("Nama wajib diisi");
- if(!idgame.value) return alert("ID Game wajib diisi");
- if(game.value==="ml" && !server.value) return alert("Server wajib diisi");
- if(!keranjang.length) return alert("Pilih produk dulu");
+ if(!nama.value||!idgame.value) return alert("Data belum lengkap");
+ if(game.value==="ml" && !server.value) return alert("Server wajib");
+ if(!keranjang.length) return alert("Pilih produk");
 
- const totalBayar=keranjang.reduce((a,b)=>a+b.h,0)+admin;
+ const totalBayar=keranjang.reduce((a,b)=>a+b.h,0)+ADMIN;
 
  const pesan=
 `/pay
+━━━━━━━━━━━━
 TOP UP ${game.options[game.selectedIndex].text}
-Nama: ${nama.value}
-ID: ${idgame.value}
+Nama : ${nama.value}
+ID   : ${idgame.value}
 ${game.value==="ml"?"Server: "+server.value:""}
 
 Pesanan:
-${keranjang.map(i=>"- "+i.n).join("\n")}
+${keranjang.map(i=>"• "+i.n).join("\n")}
 
-TOTAL: Rp${totalBayar.toLocaleString()}
-Bayar: ${bayar.value}`;
+TOTAL : Rp${totalBayar.toLocaleString()}
+Bayar : ${bayar.value}
+━━━━━━━━━━━━`;
 
- location.href=
- "https://wa.me/6282258810964?text="+encodeURIComponent(pesan);
+ location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(pesan);
 }
+
+/* ===== EVENT ===== */
+game.onchange=()=>{
+ renderProduk();
+ const show=game.value==="ml";
+ server.style.display=labelServer.style.display=show?"block":"none";
+};
 
 renderProduk();
 </script>
