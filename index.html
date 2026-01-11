@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEMETSTR TOP UP</title>
+<title>TOP UP GAME</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#4c1d95,#6d28d9);
+  background: linear-gradient(135deg,#0f172a,#1e3a8a);
   color: white;
 }
 .header {
@@ -17,13 +17,14 @@ body {
   text-align: center;
 }
 .logo {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: bold;
   color: #38bdf8;
+  letter-spacing: 2px;
 }
 .subtitle {
   font-size: 12px;
-  color: #ddd;
+  color: #cbd5f5;
 }
 .section {
   padding: 10px;
@@ -42,7 +43,7 @@ select, input {
   margin-top: 10px;
 }
 .card {
-  background: #6f44d8;
+  background: #1e40af;
   border-radius: 12px;
   padding: 12px;
   cursor: pointer;
@@ -51,26 +52,33 @@ select, input {
   outline: 2px solid #38bdf8;
 }
 .price {
-  color: #00eaff;
+  color: #22d3ee;
   font-weight: bold;
 }
 .old {
   text-decoration: line-through;
   font-size: 12px;
-  color: #ffb3b3;
+  color: #fca5a5;
 }
 .cart {
-  background: #4c1d95;
+  background: #1e3a8a;
   padding: 10px;
   border-radius: 10px;
   margin-top: 10px;
   font-size: 14px;
 }
+.payment {
+  background: #020617;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+}
 .bottom {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: #4c1d95;
+  background: #020617;
   padding: 10px;
 }
 button {
@@ -88,8 +96,8 @@ button {
 <body>
 
 <div class="header">
-  <div class="logo">MEMETSTR TOP UP</div>
-  <div class="subtitle">Fast • Aman • Instan</div>
+  <div class="logo">TOP UP GAME</div>
+  <div class="subtitle">Cepat • Aman • Instan</div>
 </div>
 
 <div class="section">
@@ -115,6 +123,15 @@ button {
   <div id="cartItem">Belum ada item</div>
   <hr>
   <div id="total">Total: Rp0</div>
+</div>
+
+<div class="section payment">
+  <b>Metode Pembayaran:</b><br>
+  ✅ QRIS<br>
+  ✅ DANA<br>
+  ✅ OVO<br>
+  ✅ GOPAY<br>
+  ✅ PULSA
 </div>
 
 <div class="bottom">
@@ -196,7 +213,7 @@ function order(){
   const totalBayar = subtotal + admin;
 
   const pesan =
-`Halo Admin MEMETSTR TOP UP
+`Halo Admin TOP UP GAME
 Game: ${game.options[game.selectedIndex].text}
 ID: ${idgame.value}
 Server: ${server.value}
@@ -204,12 +221,11 @@ Server: ${server.value}
 Pesanan:
 ${keranjang.map(i=>"- "+i.nama).join("\n")}
 
-Subtotal: Rp${subtotal.toLocaleString()}
-Admin: Rp${admin.toLocaleString()}
-TOTAL: Rp${totalBayar.toLocaleString()}`;
+TOTAL: Rp${totalBayar.toLocaleString()}
+Pembayaran: QRIS / DANA / OVO / GOPAY / PULSA`;
 
   location.href =
-    "https://wa.me/62822258810964?text=" +
+    "https://wa.me/6282258810964?text=" +
     encodeURIComponent(pesan);
 }
 
