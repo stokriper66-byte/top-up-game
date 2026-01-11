@@ -6,210 +6,178 @@
 <title>Top Up Game</title>
 
 <style>
-*{box-sizing:border-box}
 body{
- margin:0;font-family:Arial;
- background:linear-gradient(135deg,#020617,#1e3a8a);
- color:#fff;padding-bottom:90px
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#000;
+  color:#fff
 }
-.header{text-align:center;padding:15px}
-.logo{font-size:26px;font-weight:bold;color:#38bdf8}
-.section{padding:12px}
-label{font-size:14px}
-select,input{
- width:100%;padding:10px;margin-top:6px;
- border-radius:8px;border:none
-}
-.grid{
- display:grid;grid-template-columns:repeat(2,1fr);
- gap:10px;margin-top:10px
-}
+.container{max-width:500px;margin:auto;padding:15px}
+h2,h3{text-align:center}
+.step{display:none}
+.step.active{display:block}
+
 .card{
- background:#1e40af;padding:12px;border-radius:12px;
- cursor:pointer
+  background:#111;
+  padding:15px;
+  border-radius:12px;
+  margin:10px 0;
+  cursor:pointer;
+  border:1px solid #222;
+  transition:.2s
 }
-.card:hover{outline:2px solid #38bdf8}
-.price{color:#22d3ee;font-weight:bold}
-.cart{
- background:#020617;padding:12px;border-radius:12px
-}
-.cart-item{
- display:flex;justify-content:space-between;
- align-items:center;margin:5px 0
-}
-.del{
- background:#ef4444;border:none;color:#fff;
- padding:3px 8px;border-radius:6px
-}
+.card:hover{border-color:#3b82f6}
+.card.active{border-color:#3b82f6}
+
 button{
- width:100%;padding:12px;
- border:none;border-radius:10px;
- font-weight:bold;font-size:15px;
- background:#38bdf8
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#3b82f6;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  margin-top:10px;
+  cursor:pointer
 }
-.clear{background:#ef4444;margin-top:6px}
-.bottom{
- position:fixed;bottom:0;left:0;width:100%;
- background:#020617;padding:10px
+
+input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:8px;
+  background:#111;
+  color:white;
+  border:1px solid #222
 }
-.pay{
- display:flex;justify-content:center;
- gap:10px;margin-top:10px
+
+.price{color:#60a5fa;font-weight:bold}
+
+.box{
+  background:#111;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #222
 }
-.pay img{height:26px}
-.qris{
- text-align:center;margin-top:10px
+
+.pay img{
+  height:32px;
+  margin:6px;
+  filter:brightness(0) invert(1)
 }
-.history{
- background:#020617;margin-top:12px;
- padding:10px;border-radius:10px;
- font-size:13px
+.note{
+  font-size:12px;
+  color:#9ca3af;
+  text-align:center;
+  margin-top:6px
 }
 </style>
 </head>
 
 <body>
+<div class="container">
 
-<div class="header">
- <div class="logo">TOP UP GAME</div>
- <small>Cepat • Aman • Instan</small>
+<h2>TOP UP GAME</h2>
+<p class="note">Cepat • Aman • Manual</p>
+
+<!-- STEP 1 -->
+<div class="step active" id="step1">
+  <h3>Pilih Game</h3>
+  <div class="card" onclick="pilihGame('Mobile Legends')">Mobile Legends</div>
+  <div class="card" onclick="pilihGame('Free Fire')">Free Fire</div>
+  <div class="card" onclick="pilihGame('PUBG Mobile')">PUBG Mobile</div>
+  <div class="card" onclick="pilihGame('Genshin Impact')">Genshin Impact</div>
 </div>
 
-<div class="section">
- <label>Pilih Game</label>
- <select id="game" onchange="renderProduk()">
-  <option value="ml">Mobile Legends</option>
-  <option value="ff">Free Fire</option>
-  <option value="pubg">PUBG Mobile</option>
-  <option value="genshin">Genshin Impact</option>
- </select>
-
- <label>ID Game</label>
- <input id="idgame" placeholder="Contoh: 12345678">
-
- <label id="lblServer">Server</label>
- <input id="server" placeholder="Contoh: 1234">
+<!-- STEP 2 -->
+<div class="step" id="step2">
+  <h3>Masukkan ID</h3>
+  <input id="idgame" placeholder="ID Game (angka)">
+  <input id="server" placeholder="Server (jika ada)">
+  <button onclick="keStep3()">Lanjut</button>
 </div>
 
-<div class="section grid" id="produk"></div>
-
-<div class="section cart">
- <b>Keranjang:</b>
- <div id="cart">Belum ada item</div>
- <hr>
- <div id="total">Total: Rp0</div>
- <button class="clear" onclick="clearCart()">Kosongkan Keranjang</button>
-
- <div class="qris">
-  <p><b>QRIS Pembayaran</b></p>
-  <img src="qris.jpg" width="200">
- </div>
-
- <div class="pay">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/Logo_ovo_purple.svg">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Logo_Gopay.svg">
- </div>
+<!-- STEP 3 -->
+<div class="step" id="step3">
+  <h3>Pilih Nominal</h3>
+  <div class="card" onclick="pilihNominal('86 Diamonds',23000)">
+    86 Diamonds<br><span class="price">Rp23.000</span>
+  </div>
+  <div class="card" onclick="pilihNominal('172 Diamonds',45000)">
+    172 Diamonds<br><span class="price">Rp45.000</span>
+  </div>
+  <div class="card" onclick="pilihNominal('257 Diamonds',67000)">
+    257 Diamonds<br><span class="price">Rp67.000</span>
+  </div>
 </div>
 
-<div class="section history">
- <b>History Transaksi</b>
- <div id="history">Belum ada transaksi</div>
+<!-- STEP 4 -->
+<div class="step" id="step4">
+  <h3>Ringkasan Pesanan</h3>
+  <div class="box" id="ringkasan"></div>
+  <button onclick="keStep5()">Lanjut Pembayaran</button>
 </div>
 
-<div class="bottom">
- <button onclick="order()">Pesan via WhatsApp</button>
+<!-- STEP 5 -->
+<div class="step" id="step5">
+  <h3>Pembayaran</h3>
+  <div class="pay" style="text-align:center">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/QRIS_logo.svg">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/Logo_ovo_purple.svg">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg">
+  </div>
+  <p class="note">Pembayaran manual • Admin online</p>
+  <button onclick="orderWA()">Pesan via WhatsApp</button>
+</div>
+
 </div>
 
 <script>
-const untung = 2000;
-const nomorWA = "6282258810964";
+let game="",uid="",server="",nominal="",harga=0;
 
-const data={
- ml:[
-  {n:"86 DM",m:21000},{n:"172 DM",m:43000},
-  {n:"257 DM",m:65000},{n:"344 DM",m:86000}
- ],
- ff:[
-  {n:"70 DM",m:8000},{n:"140 DM",m:17000},
-  {n:"355 DM",m:45000},{n:"720 DM",m:90000}
- ],
- pubg:[
-  {n:"60 UC",m:13000},{n:"325 UC",m:70000}
- ],
- genshin:[
-  {n:"60 Genesis",m:14000},{n:"300 Genesis",m:72000}
- ]
-};
-
-let keranjang=[];
-let history=JSON.parse(localStorage.getItem("trx")||"[]");
-
-function renderProduk(){
- produk.innerHTML="";
- data[game.value].forEach(d=>{
-  const harga=d.m+untung;
-  produk.innerHTML+=`
-   <div class="card" onclick="add('${d.n}',${harga})">
-    <div>${d.n}</div>
-    <div class="price">Rp${harga.toLocaleString()}</div>
-    <small>⚡ Instan</small>
-   </div>`;
- });
- server.style.display = game.value==="ff"?"none":"block";
- lblServer.style.display = server.style.display;
+function show(step){
+ document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+ document.getElementById(step).classList.add('active');
 }
 
-function add(n,h){keranjang.push({n,h});update()}
-function del(i){keranjang.splice(i,1);update()}
-function clearCart(){keranjang=[];update()}
-
-function update(){
- if(!keranjang.length){
-  cart.innerText="Belum ada item";
-  total.innerText="Total: Rp0";return
- }
- cart.innerHTML="";
- keranjang.forEach((i,x)=>{
-  cart.innerHTML+=`
-   <div class="cart-item">
-    <span>${i.n}</span>
-    <button class="del" onclick="del(${x})">X</button>
-   </div>`;
- });
- const t=keranjang.reduce((a,b)=>a+b.h,0);
- total.innerText="TOTAL: Rp"+t.toLocaleString();
+function pilihGame(g){
+ game=g;
+ show('step2');
 }
 
-function order(){
- if(!idgame.value) return alert("ID wajib diisi");
- if(game.value!=="ff" && !server.value) return alert("Server wajib diisi");
- if(!keranjang.length) return alert("Pilih produk");
+function keStep3(){
+ uid=idgame.value.trim();
+ server=server.value.trim();
+ if(!uid) return alert("ID wajib diisi");
+ show('step3');
+}
 
- const totalBayar=keranjang.reduce((a,b)=>a+b.h,0);
- const pesan=
-`TOP UP ${game.options[game.selectedIndex].text}
-ID: ${idgame.value}
-${game.value!=="ff"?"Server: "+server.value:""}
+function pilihNominal(n,h){
+ nominal=n; harga=h;
+ document.getElementById('ringkasan').innerHTML=
+ `Game : ${game}<br>
+ ID : ${uid}<br>
+ Server : ${server || '-'}<br>
+ Nominal : ${nominal}<br>
+ <b>Total : Rp${harga.toLocaleString()}</b>`;
+ show('step4');
+}
 
-Pesanan:
-${keranjang.map(i=>"- "+i.n).join("\n")}
+function keStep5(){ show('step5'); }
 
-TOTAL: Rp${totalBayar.toLocaleString()}
+function orderWA(){
+ const text=
+`TOP UP ${game}
+ID: ${uid}
+Server: ${server || '-'}
+Nominal: ${nominal}
+TOTAL: Rp${harga.toLocaleString()}
 Bayar: QRIS / DANA / OVO / GOPAY`;
-
- history.unshift(pesan);
- localStorage.setItem("trx",JSON.stringify(history));
- renderHistory();
-
- location.href="https://wa.me/"+nomorWA+"?text="+encodeURIComponent(pesan);
+ location.href="https://wa.me/6282258810964?text="+encodeURIComponent(text);
 }
-
-function renderHistory(){
- historyDiv.innerHTML=history.slice(0,3).map(h=>`<pre>${h}</pre>`).join("");
-}
-const historyDiv=document.getElementById("history");
-renderProduk();renderHistory();
 </script>
 
 </body>
