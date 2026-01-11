@@ -9,13 +9,21 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #5b2dbd;
+  background: linear-gradient(135deg,#4c1d95,#6d28d9);
   color: white;
 }
 .header {
   padding: 15px;
-  font-size: 22px;
+  text-align: center;
+}
+.logo {
+  font-size: 26px;
   font-weight: bold;
+  color: #38bdf8;
+}
+.subtitle {
+  font-size: 12px;
+  color: #ddd;
 }
 .section {
   padding: 10px;
@@ -39,8 +47,8 @@ select, input {
   padding: 12px;
   cursor: pointer;
 }
-.card.active {
-  outline: 3px solid #00eaff;
+.card:hover {
+  outline: 2px solid #38bdf8;
 }
 .price {
   color: #00eaff;
@@ -51,15 +59,12 @@ select, input {
   font-size: 12px;
   color: #ffb3b3;
 }
-.badge {
-  margin-top: 6px;
-  font-size: 11px;
-}
 .cart {
   background: #4c1d95;
   padding: 10px;
   border-radius: 10px;
   margin-top: 10px;
+  font-size: 14px;
 }
 .bottom {
   position: fixed;
@@ -82,13 +87,18 @@ button {
 
 <body>
 
-<div class="header">MEMETSTR TOP UP</div>
+<div class="header">
+  <div class="logo">MEMETSTR TOP UP</div>
+  <div class="subtitle">Fast • Aman • Instan</div>
+</div>
 
 <div class="section">
   <label>Pilih Game</label>
   <select id="game" onchange="renderProduk()">
     <option value="ml">Mobile Legends</option>
     <option value="ff">Free Fire</option>
+    <option value="pubg">PUBG Mobile</option>
+    <option value="genshin">Genshin Impact</option>
   </select>
 
   <label>ID Game</label>
@@ -100,27 +110,37 @@ button {
 
 <div class="section grid" id="produk"></div>
 
-<div class="section cart" id="cart">
+<div class="section cart">
   <b>Keranjang:</b>
   <div id="cartItem">Belum ada item</div>
+  <hr>
+  <div id="total">Total: Rp0</div>
 </div>
 
 <div class="bottom">
-  <button onclick="order()">Pesan Sekarang</button>
+  <button onclick="order()">Pesan via WhatsApp</button>
 </div>
 
 <script>
 const untung = 2000;
+const admin = 1000;
 
 const data = {
   ml: [
     {nama:"86 Diamonds", modal:21000},
-    {nama:"172 Diamonds", modal:43000},
-    {nama:"257 Diamonds", modal:65000}
+    {nama:"172 Diamonds", modal:43000}
   ],
   ff: [
     {nama:"70 Diamonds", modal:8000},
     {nama:"140 Diamonds", modal:17000}
+  ],
+  pubg: [
+    {nama:"60 UC", modal:13000},
+    {nama:"325 UC", modal:70000}
+  ],
+  genshin: [
+    {nama:"60 Genesis", modal:14000},
+    {nama:"300 Genesis", modal:72000}
   ]
 };
 
@@ -130,7 +150,6 @@ function renderProduk(){
   const game = document.getElementById("game").value;
   const box = document.getElementById("produk");
   box.innerHTML = "";
-
   data[game].forEach(p => {
     const jual = p.modal + untung;
     const div = document.createElement("div");
@@ -138,8 +157,8 @@ function renderProduk(){
     div.innerHTML = `
       <div>${p.nama}</div>
       <div class="price">Rp${jual.toLocaleString()}</div>
-      <div class="old">Modal Rp${p.modal.toLocaleString()}</div>
-      <div class="badge">⚡ Instan</div>
+      <div class="old">Rp${p.modal.toLocaleString()}</div>
+      <div style="font-size:11px">⚡ Instan</div>
     `;
     div.onclick = () => tambah(p.nama, jual);
     box.appendChild(div);
@@ -154,33 +173,40 @@ function tambah(nama, harga){
 function updateCart(){
   if(keranjang.length === 0){
     cartItem.innerText = "Belum ada item";
+    total.innerText = "Total: Rp0";
     return;
   }
   cartItem.innerHTML = keranjang.map(
     i => `• ${i.nama} - Rp${i.harga.toLocaleString()}`
   ).join("<br>");
+
+  const subtotal = keranjang.reduce((a,b)=>a+b.harga,0);
+  total.innerText =
+    `Subtotal: Rp${subtotal.toLocaleString()}
+Admin: Rp${admin.toLocaleString()}
+TOTAL BAYAR: Rp${(subtotal+admin).toLocaleString()}`;
 }
 
 function order(){
-  const id = idgame.value;
-  const server = document.getElementById("server").value;
-  if(!id || !server || keranjang.length === 0){
-    alert("Lengkapi ID, Server, dan pilih produk");
+  if(!idgame.value || !server.value || keranjang.length === 0){
+    alert("Lengkapi data dan pilih produk");
     return;
   }
+  const subtotal = keranjang.reduce((a,b)=>a+b.harga,0);
+  const totalBayar = subtotal + admin;
 
-  let total = keranjang.reduce((a,b)=>a+b.harga,0);
-
-  let pesan =
+  const pesan =
 `Halo Admin MEMETSTR TOP UP
 Game: ${game.options[game.selectedIndex].text}
-ID: ${id}
-Server: ${server}
+ID: ${idgame.value}
+Server: ${server.value}
 
 Pesanan:
 ${keranjang.map(i=>"- "+i.nama).join("\n")}
 
-Total: Rp${total.toLocaleString()}`;
+Subtotal: Rp${subtotal.toLocaleString()}
+Admin: Rp${admin.toLocaleString()}
+TOTAL: Rp${totalBayar.toLocaleString()}`;
 
   location.href =
     "https://wa.me/62822258810964?text=" +
